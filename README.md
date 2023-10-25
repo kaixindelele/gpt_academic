@@ -1,0 +1,2 @@
+# gpt_academic_latex
+学术版GPT版本控制失败后的重起炉灶
