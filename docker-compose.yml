@@ -1,0 +1,38 @@
+version: '3'
+services:
+  gpt_academic_full_capability:
+    container_name: gpt_academic_full_capability
+    image: gptacademicqingxu:latest
+    environment:
+      # 请查阅 `config.py` 以查看所有的配置信息
+
+      API_KEY:                  "sk-KvALs"
+      ENABLE_AUDIO:             '    False                                                                    '
+      LOCAL_MODEL_DEVICE:       '    cuda                                                                     '
+      DEFAULT_WORKER_NUM:       '    10                                                                        '
+      WEB_PORT:                 '    1235                                                                     '
+      ADD_WAIFU:                '    False                                                                    '
+      USE_PROXY:                '    True                                                                    '      
+      proxies: ' {"http":  "socks5h://host.docker.internal:7890", "https": "socks5h://host.docker.internal:7890", }'
+      THEME:                    '    Chuanhu-Small-and-Beautiful                                              '
+      Arxiv_Cache: /arxiv_cache
+      
+
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+    # network_mode: host    
+    
+    volumes:
+      - e:/academic/cache:/arxiv_cache
+      - e:/academic/black_apis.txt:/gpt/gpt_academic/black_apis.txt
+    #   - /home/lyl/.cache/torch/hub/nougat:/root/.cache/torch/hub/nougat
+
+    # runtime: nvidia
+    # devices:
+    #   - /dev/nvidia0:/dev/nvidia0
+    # 不使用代理网络拉取最新代码
+    command: >
+      bash -c "python3 -u main.py"
+
