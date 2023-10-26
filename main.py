@@ -87,7 +87,7 @@ def main():
                             <li> 有能力的同学可以自己部署到本地<a href="https://github.com/binary-husky/gpt_academic">开源版代码</a></li>
                             <li>⚠️ 如果key额度经常报错，刷新一下就好了！大家的赞助也会用来买新的api</li>
                             <li>⚠️ 系统每个整点会自动重启，用于清空缓存!这个的翻译会中断！</li>
-                            <li>🎉 本地PDF全文翻译请点击"精准翻译PDF论文"，欢迎大家使用和反馈QQ群-930558083</li>
+                            <li>🎉 本地PDF全文翻译和Arxiv论文原生翻译又恢复了！欢迎大家使用和反馈QQ群-930558083</li>
                         </ol>
                     </div>
                 </div>
