@@ -695,7 +695,21 @@ def what_keys(keys):
 def select_api_key(keys, llm_model):
     import random
     avail_key_list = []
-    key_list = keys.split(',')
+    keys = keys.strip()
+    if "," in keys:
+        key_list = keys.split(',')
+    elif "\n" in keys:
+        key_list = keys.split('\n')
+    else:
+        print("keys:", keys)
+        key_list = [keys]
+    key_list = [key for key in key_list if len(key) > 0]
+    try:
+        with open('black_apis.txt', 'r', encoding='utf8') as f:
+            black_apis = f.read().split('\n')
+    except Exception as e:
+        print("读取黑名单失败，将不会使用黑名单", e)
+        black_apis = []
 
     if llm_model.startswith('gpt-'):
         for k in key_list:
