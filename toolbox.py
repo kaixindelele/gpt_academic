@@ -713,7 +713,9 @@ def select_api_key(keys, llm_model):
 
     if llm_model.startswith('gpt-'):
         for k in key_list:
-            if is_openai_api_key(k): avail_key_list.append(k)
+            # 在这儿判断这些key是否在黑名单中
+            if is_openai_api_key(k) and k not in black_apis: 
+                avail_key_list.append(k)
 
     if llm_model.startswith('api2d-'):
         for k in key_list:
