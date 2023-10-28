@@ -80,18 +80,18 @@ def ArgsGeneralWrapper(f):
         }
         chatbot_with_cookie = ChatBotWithCookies(cookies)
         chatbot_with_cookie.write_list(chatbot)
-        if llm_kwargs['client_ip'] in black_list:
-            print("black_list:", black_list)
-            print("black_num_list:", black_num_list)
-            max_reject_num = 3
-            now_ip_index = black_list.index(llm_kwargs['client_ip'])
-            if black_num_list[now_ip_index] >= max_reject_num:           
-                print("封禁的ID:", llm_kwargs['client_ip'])     
-                chatbot_with_cookie.append(['ID已封禁', 'ID已封禁'])
-                yield from update_ui(chatbot_with_cookie, history, msg='ID已封禁')
-                return  # 结束
-            else:
-                pass
+        # if llm_kwargs['client_ip'] in black_list:
+        #     print("black_list:", black_list)
+        #     print("black_num_list:", black_num_list)
+        #     max_reject_num = 3
+        #     now_ip_index = black_list.index(llm_kwargs['client_ip'])
+        #     if black_num_list[now_ip_index] >= max_reject_num:           
+        #         print("封禁的ID:", llm_kwargs['client_ip'])     
+        #         chatbot_with_cookie.append(['ID已封禁', 'ID已封禁'])
+        #         yield from update_ui(chatbot_with_cookie, history, msg='ID已封禁')
+        #         return  # 结束
+        #     else:
+        #         pass
             
         if cookies.get('lock_plugin', None) is None:
             # 正常状态
