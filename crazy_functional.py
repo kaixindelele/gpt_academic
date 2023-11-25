@@ -146,7 +146,7 @@ def get_crazy_functions():
         print('Load function plugin failed')
 
     # try:
-    #     from crazy_functions.图片生成 import edit_image
+    #     from crazy_functions.图片生成 import 图片修改_DALLE2
     #     function_plugins.update({
     #         "图片编辑（DALL-E3-输入图片修改）": {
     #             "Group": "对话",
@@ -155,7 +155,7 @@ def get_crazy_functions():
     #             "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
     #             "ArgsReminder": "在这里输入分辨率, 如256x256（默认）",  # 高级参数输入区的显示提示
     #             "Info": "图片生成 | 输入参数字符串，提供图像的内容",
-    #             "Function": HotReload(edit_image)
+    #             "Function": HotReload(图片修改_DALLE2)
     #         },
     #     })
     # except:

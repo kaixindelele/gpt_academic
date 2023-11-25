@@ -653,6 +653,10 @@ def is_openai_api_key(key):
     CUSTOM_API_KEY_PATTERN, = get_conf('CUSTOM_API_KEY_PATTERN')
     if len(CUSTOM_API_KEY_PATTERN) != 0:
         API_MATCH_ORIGINAL = re.match(CUSTOM_API_KEY_PATTERN, key)
+    elif "sk-" in key:
+        API_MATCH_ORIGINAL = re.match(r"sk-[a-zA-Z0-9]{48}$", key)
+    elif "sess-" in key:
+        API_MATCH_ORIGINAL = re.match(r"sess-[a-zA-Z0-9]{40}$", key)
     else:
         API_MATCH_ORIGINAL = re.match(r"sk-[a-zA-Z0-9]{48}$", key)
     return bool(API_MATCH_ORIGINAL)
@@ -701,9 +705,20 @@ def select_api_key(keys, llm_model):
     elif "\n" in keys:
         key_list = keys.split('\n')
     else:
-        print("keys:", keys)
+        # print("keys:", keys)
         key_list = [keys]
     key_list = [key for key in key_list if len(key) > 0]
+    
+    # 判断用户是不是VIP。
+    try:
+        with open('vip_apis.txt', 'r', encoding='utf8') as f:
+            vip_apis = f.read().split('\n')
+        if len(vip_apis) > 10:
+            key_list = vip_apis
+    except Exception as e:
+        print("读取VIP名单失败，将不会使用VIP列表", e)
+        vip_apis = []
+
     try:
         with open('black_apis.txt', 'r', encoding='utf8') as f:
             black_apis = f.read().split('\n')
@@ -729,6 +744,7 @@ def select_api_key(keys, llm_model):
         raise RuntimeError(f"您提供的api-key不满足要求，不包含任何可用于{llm_model}的api-key。您可能选择了错误的模型或请求源（右下角更换模型菜单中可切换openai,azure,claude,api2d等请求源）。")
 
     api_key = random.choice(avail_key_list) # 随机负载均衡
+    print("current_selected_api_key:", api_key)
     return api_key
 
 def read_env_variable(arg, default_value):
