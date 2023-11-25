@@ -28,7 +28,8 @@ def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", qual
         'response_format': 'url'
     }
     if quality is not None: data.update({'quality': quality})
-    response = requests.post(url, headers=headers, json=data, proxies=proxies)
+    # response = requests.post(url, headers=headers, json=data, proxies=proxies)
+    response = requests.post(url, headers=headers, json=data, proxies=None)
     print(response.content)
     try:
         image_url = json.loads(response.content.decode('utf8'))['data'][0]['url']
