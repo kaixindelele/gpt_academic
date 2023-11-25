@@ -30,13 +30,14 @@ def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", qual
     if quality is not None: data.update({'quality': quality})
     # response = requests.post(url, headers=headers, json=data, proxies=proxies)
     response = requests.post(url, headers=headers, json=data, proxies=None)
-    print(response.content)
+    print("response.content:", response.content)
     try:
         image_url = json.loads(response.content.decode('utf8'))['data'][0]['url']
     except:
         raise RuntimeError(response.content.decode())
     # 文件保存到本地
-    r = requests.get(image_url, proxies=proxies)
+    # r = requests.get(image_url, proxies=proxies)
+    r = requests.get(image_url, proxies=None)
     file_path = f'{get_log_folder()}/image_gen/'
     os.makedirs(file_path, exist_ok=True)
     file_name = 'Image' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png'
