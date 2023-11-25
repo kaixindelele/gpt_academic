@@ -73,8 +73,8 @@ def main():
                             <li>我和<a href="https://github.com/binary-husky/gpt_academic">学术版GPT</a>作者qingxu，希望能提供一个学术工具，请大家不要滥用，更不要用于违法犯罪；</li>
                             <li>请注意数据隐私保护，不要上传涉密和重要的个人数据；</li>    
                             <li>如果有bug或者连不上，欢迎加群反馈930558083。请提交明确的操作步骤和报错信息截图；</li>
-                            <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 精读，希望大家能快速摄取知识。</li>
-                            <li><a href="https://www.bilibili.com/video/BV1YP411D73Q">ChatPaper使用教程视频</a></li>
+                            <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a>，希望大家能快速摄取知识。</li>
+                            <li>⚠️ 最近发现有人<b>直接贩卖本网站的网址</b>！本网站目前是全免费的，大家不要被割韭菜了！</li>
                             <li>⚠️ 有些地方需要魔法才能登录！感谢理解、支持，并且<b>欢迎赞助!</b></li>
                             
                         </ol>
@@ -87,7 +87,7 @@ def main():
                             <li> 有能力的同学可以自己部署到本地<a href="https://github.com/binary-husky/gpt_academic">开源版代码</a></li>
                             <li>⚠️ 如果key额度经常报错，刷新一下就好了！大家的<b>赞助</b>也会用来买新的api</li>
                             <li>⚠️ 系统每个整点会自动重启，用于清空缓存!这个的翻译会中断！</li>
-                            <li>🎉 本地PDF全文翻译:1.右下角上传文件, 2.路径加载好后, 3.点击'精准翻译本地PDF论文'</li>
+                            <li>🎉 本地PDF全文翻译:1.右下角上传文件, 2.路径加载好后, 3.点击'本地PDF论文精准翻译'</li>
                             <li>🎉 支持和赞助方式->右边的二维码，感谢大家的支持！反馈QQ群-930558083</li>
                         </ol>
                     </div>
@@ -171,7 +171,8 @@ def main():
                         with gr.Row():
                             audio_mic = gr.Audio(source="microphone", type="numpy", streaming=True, show_label=False).style(container=False)
                     with gr.Row():
-                        status = gr.Markdown(f"Tip: 按Enter提交, 按Shift+Enter换行。当前模型: {LLM_MODEL} \n {proxy_info}", elem_id="state-panel")
+                        # status = gr.Markdown(f"Tip: 按Enter提交, 按Shift+Enter换行。当前模型: {LLM_MODEL} \n {proxy_info}", elem_id="state-panel")
+                        status = gr.Markdown(f"Tip: 1.按Enter提交 2.按Shift+Enter换行 3.右下角上传/下载文件。4. 插件功能点击插件. 当前模型: {LLM_MODEL}", elem_id="state-panel")
                 with gr.Accordion("基础功能区", open=True, elem_id="basic-panel") as area_basic_fn:
                     with gr.Row():
                         for k in range(NUM_CUSTOM_BASIC_BTN):

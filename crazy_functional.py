@@ -41,7 +41,7 @@ def get_crazy_functions():
         "虚空终端": {
             "Group": "对话|编程|学术|智能体",
             "Color": "stop",
-            "AsButton": True,
+            "AsButton": False,
             "Function": HotReload(虚空终端)
         },
         "解析整个Python项目": {
@@ -60,7 +60,7 @@ def get_crazy_functions():
             "Function": HotReload(批量生成函数注释)
         },
         
-        "精准翻译本地PDF论文": {
+        "本地PDF论文-精准翻译": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,  
@@ -130,20 +130,36 @@ def get_crazy_functions():
         print('Load function plugin failed')
 
     try:
-        from crazy_functions.图片生成 import 图片生成
+        from crazy_functions.图片生成 import 图片生成_DALLE3
         function_plugins.update({
-            "图片生成（先切换模型到openai或api2d）": {
+            "图片生成（DALL-E3-免费畅享）": {
                 "Group": "对话",
                 "Color": "stop",
-                "AsButton": False,
+                "AsButton": True,
                 "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
                 "ArgsReminder": "在这里输入分辨率, 如256x256（默认）",  # 高级参数输入区的显示提示
                 "Info": "图片生成 | 输入参数字符串，提供图像的内容",
-                "Function": HotReload(图片生成)
+                "Function": HotReload(图片生成_DALLE3)
             },
         })
     except:
         print('Load function plugin failed')
+
+    # try:
+    #     from crazy_functions.图片生成 import edit_image
+    #     function_plugins.update({
+    #         "图片编辑（DALL-E3-输入图片修改）": {
+    #             "Group": "对话",
+    #             "Color": "stop",
+    #             "AsButton": True,
+    #             "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
+    #             "ArgsReminder": "在这里输入分辨率, 如256x256（默认）",  # 高级参数输入区的显示提示
+    #             "Info": "图片生成 | 输入参数字符串，提供图像的内容",
+    #             "Function": HotReload(edit_image)
+    #         },
+    #     })
+    # except:
+    #     print('Load function plugin failed')
 
     try:
         from crazy_functions.总结音视频 import 总结音视频

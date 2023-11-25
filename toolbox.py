@@ -825,6 +825,7 @@ def get_conf(*args):
     for arg in args:
         r = read_single_conf_with_lru_cache(arg)
         res.append(r)
+    # if len(res) == 1: return res[0]
     return res
 
 
