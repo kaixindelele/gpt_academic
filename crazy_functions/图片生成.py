@@ -6,9 +6,9 @@ def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-3", qual
     import requests, json, time, os
     from request_llm.bridge_all import model_info
 
-    proxies = get_conf('proxies')
-    porxies = proxies[0] if len(proxies) == 1 else porxies
-    print("gen_image porxies:", porxies)
+    proxies, = get_conf('proxies')
+    # porxies = proxies[0] if len(proxies) == 1 else porxies
+    print("gen_image porxies:", proxies)
     # Set up OpenAI API key and model 
     api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
     chat_endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
