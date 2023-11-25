@@ -2,7 +2,7 @@ from toolbox import CatchException, update_ui, get_conf, select_api_key, get_log
 from crazy_functions.multi_stage.multi_stage_utils import GptAcademicState
 
 
-def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", quality=None):
+def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-3", quality=None):
     import requests, json, time, os
     from request_llm.bridge_all import model_info
 
@@ -28,16 +28,16 @@ def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", qual
         'response_format': 'url'
     }
     if quality is not None: data.update({'quality': quality})
-    # response = requests.post(url, headers=headers, json=data, proxies=proxies)
-    response = requests.post(url, headers=headers, json=data, proxies=None)
+    response = requests.post(url, headers=headers, json=data, proxies=proxies)
+    # response = requests.post(url, headers=headers, json=data, proxies=None)
     print("response.content:", response.content)
     try:
         image_url = json.loads(response.content.decode('utf8'))['data'][0]['url']
     except:
         raise RuntimeError(response.content.decode())
     # 文件保存到本地
-    # r = requests.get(image_url, proxies=proxies)
-    r = requests.get(image_url, proxies=None)
+    r = requests.get(image_url, proxies=proxies)
+    # r = requests.get(image_url, proxies=None)
     file_path = f'{get_log_folder()}/image_gen/'
     os.makedirs(file_path, exist_ok=True)
     file_name = 'Image' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png'
