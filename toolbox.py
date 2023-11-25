@@ -716,7 +716,7 @@ def select_api_key(keys, llm_model):
         if len(vip_apis) > 10:
             key_list = vip_apis
     except Exception as e:
-        print("读取VIP名单失败，将不会使用VIP列表", e)
+        # print("读取VIP名单失败，将不会使用VIP列表", e)
         vip_apis = []
 
     try:
