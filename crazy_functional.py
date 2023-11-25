@@ -60,7 +60,7 @@ def get_crazy_functions():
             "Function": HotReload(批量生成函数注释)
         },
         
-        "本地PDF论文-精准翻译": {
+        "本地PDF论文-精准翻译[md用vscode的Markdown PDF转PDF]": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,  
