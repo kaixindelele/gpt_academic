@@ -74,8 +74,8 @@ def main():
                             <li>请注意数据隐私保护，不要上传涉密和重要的个人数据；</li>    
                             <li>bug或连不上请加群反馈930558083; 需提交<b>明确的操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
-                            <li>⚠️ 最近发现有人<b>直接贩卖本网站的网址</b>！本网站目前是全免费的，大家不要被割韭菜了！</li>
                             <li>⚠️ 有些地方需要魔法才能登录！感谢理解!</b></li>
+                            <li>🎉 <b>新购买了1000个满速api,速度极大提升！免费畅享！</b></li>
                             
                         </ol>
                     </div>
@@ -85,11 +85,10 @@ def main():
                         <ol start="7" style="text-align: left; line-height: 1.5;">                            
                             <li> 有能力的同学可以自己部署到本地<a href="https://github.com/binary-husky/gpt_academic">开源版代码</a></li>
                             <li>⚠️ 如果key额度经常报错，刷新一下就好了！大家的<b>赞助</b>也会用来买新的api</li>
-                            <li>⚠️ 系统每个整点会自动重启，用于清空缓存!这个的翻译会中断！</li>
                             <li>教程1: Arxiv论文翻译: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
-                            <li>教程2: 本地PDF全文翻译:1.右下角上传文件, 2.路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
+                            <li>教程2: 本地PDF全文翻译:1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
                             <li>教程3: Dalle-3画图:1.输入提示词, 2.点'图片生成'插件</li>
-                            <li>🎉 欢迎大家捐赠，捐赠方式->右边的二维码,非常感谢！</li>
+                            <li>🎉 欢迎大家捐赠->右边的二维码,非常感谢！</li>
                         </ol>
                     </div>
                 </div>

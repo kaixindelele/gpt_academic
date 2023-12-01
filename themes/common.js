@@ -136,6 +136,13 @@ function GptAcademicJavaScriptInit(LAYOUT = "LEFT-RIGHT") {
     });
     chatbotObserver.observe(chatbotIndicator, { attributes: true, childList: true, subtree: true });
     if (LAYOUT === "LEFT-RIGHT") {chatbotAutoHeight();}
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?208673d55832a94b9bbe10b1f4e70c09";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+    })();
 }
 
 function get_elements(consider_state_panel=false) {
