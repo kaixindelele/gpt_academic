@@ -10,7 +10,7 @@ import glob
 from latex2mathml.converter import convert as tex2mathml
 from functools import wraps, lru_cache
 pj = os.path.join
-
+default_user_name = 'default_user'
 """
 ========================================================================
 第一部分
@@ -526,6 +526,17 @@ def find_recent_files(directory):
 
     return recent_files
 
+def file_already_in_downloadzone(file, user_path):
+    try:
+        parent_path = os.path.abspath(user_path)
+        child_path = os.path.abspath(file)
+        if os.path.samefile(os.path.commonpath([parent_path, child_path]), parent_path):
+            return True
+        else:
+            return False
+    except:
+        return False
+
 def promote_file_to_downloadzone(file, rename_file=None, chatbot=None):
     # 将文件复制一份到下载区
     import shutil
@@ -535,7 +546,8 @@ def promote_file_to_downloadzone(file, rename_file=None, chatbot=None):
         user_name = default_user_name
     if not os.path.exists(file):
         raise FileNotFoundError(f'文件{file}不存在')
-    user_path = get_log_folder(user_name, plugin_name=None)
+    # user_path = get_log_folder(user_name, plugin_name=None)
+    user_path = get_log_folder(user_name, plugin_name='downloadzone')
     if file_already_in_downloadzone(file, user_path):
         new_path = file
     else:
@@ -1017,6 +1029,9 @@ def get_log_folder(user='default', plugin_name='shared'):
     _dir = pj(PATH_LOGGING, user, plugin_name)
     if not os.path.exists(_dir): os.makedirs(_dir)
     return _dir
+
+def get_user(chatbotwithcookies):
+    return chatbotwithcookies._cookies.get('user_name', default_user_name)
 
 class ProxyNetworkActivate():
     """

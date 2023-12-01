@@ -233,7 +233,7 @@ def get_crazy_functions():
         })
         from crazy_functions.Latex输出PDF结果 import Latex翻译中文并重新编译PDF
         function_plugins.update({
-            "Arixv论文原生翻译（输入arxivID）[需Latex]": {
+            "Arxiv论文原生翻译（输入arxivID）[需Latex]": {
                 "Group": "学术",
                 "Color": "stop",
                 "AsButton": True,
@@ -242,7 +242,7 @@ def get_crazy_functions():
                     "如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 " +
                     "例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: " +
                     'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                "Info": "Arixv论文精细翻译 | 输入参数arxiv论文的ID，比如1812.10695",
+                "Info": "Arxiv论文精细翻译 | 输入参数arxiv论文的ID，比如1812.10695",
                 "Function": HotReload(Latex翻译中文并重新编译PDF)
             }
         })
