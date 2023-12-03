@@ -72,7 +72,7 @@ def main():
                         <ol start="1" style="text-align: left; line-height: 1.5;">
                             <li>我和<a href="https://github.com/binary-husky/gpt_academic">学术版GPT</a>作者qingxu，希望能提供一个学术工具，请大家不要滥用，更不要用于违法犯罪；</li>
                             <li>请注意数据隐私保护，不要上传涉密和重要的个人数据；</li>    
-                            <li>bug或连不上请加群反馈930558083; 需提交<b>明确的操作步骤和报错信息截图</b>；</li>
+                            <li>bug或连不上请加群反馈931241203; 需提交<b>明确的操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li>⚠️ 有些地方需要魔法才能登录！感谢理解!</b></li>
                             <li>🎉 <b>新购买了1000个满速api,速度极大提升！免费畅享！</b></li>
@@ -88,7 +88,7 @@ def main():
                             <li>教程1: Arxiv论文翻译: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li>教程2: 本地PDF全文翻译:1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
                             <li>教程3: Dalle-3画图:1.输入提示词, 2.点'图片生成'插件</li>
-                            <li>🎉 欢迎大家捐赠->右边的二维码,非常感谢！</li>
+                            <li>🎉 欢迎大家<b>捐赠</b>->右边的二维码,非常感谢！您的捐赠将用于网站维护和api购置</li>
                         </ol>
                     </div>
                 </div>
@@ -102,7 +102,7 @@ def main():
     description =  "Github源代码开源和更新[地址🚀](https://github.com/binary-husky/gpt_academic), "
     description += "感谢热情的[开发者们❤️](https://github.com/binary-husky/gpt_academic/graphs/contributors)."
     description += "</br></br>常见问题请查阅[项目Wiki](https://github.com/binary-husky/gpt_academic/wiki), "
-    description += "如遇到Bug请前往[Bug反馈](https://github.com/binary-husky/gpt_academic/issues).或者加群930558083"
+    description += "如遇到Bug请前往[Bug反馈](https://github.com/binary-husky/gpt_academic/issues).或者加群931241203"
     description += "</br></br>普通对话使用说明: 1. 输入问题; 2. 点击提交"
     description += "</br></br>基础功能区使用说明: 1. 输入文本; 2. 点击任意基础功能区按钮"
     description += "</br></br>函数插件区使用说明: 1. 输入路径/问题, 或者上传文件; 2. 点击任意函数插件区按钮"
