@@ -83,11 +83,9 @@ def main():
                 <div class="content">     
                     <div class="column">
                         <ol start="7" style="text-align: left; line-height: 1.5;">                            
-                            <li> 有能力的同学可以自己部署到本地<a href="https://github.com/binary-husky/gpt_academic">开源版代码</a></li>
-                            <li>⚠️ 如果key额度经常报错，刷新一下就好了！大家的<b>赞助</b>也会用来买新的api</li>
-                            <li>教程1: Arxiv论文翻译: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
-                            <li>教程2: 本地PDF全文翻译:1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
-                            <li>教程3: Dalle-3画图:1.输入提示词, 2.点'图片生成'插件</li>
+                            <li><b>教程1 Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
+                            <li><b>教程2 本地PDF全文翻译</b>: 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
+                            <li><b>教程3 Dalle-3画图</b>: 1.输入提示词, 2.点'图片生成'插件</li>
                             <li>🎉 欢迎大家<b>捐赠</b>->右边的二维码,非常感谢！您的捐赠将用于网站维护和api购置</li>
                         </ol>
                     </div>
