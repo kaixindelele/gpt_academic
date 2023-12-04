@@ -81,11 +81,11 @@ def main():
                 <div class="content">     
                     <div class="column">
                         <ol start="6" style="text-align: left; line-height: 1.5;">                            
-                            <li><b>教程1 Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
-                            <li><b>教程2 本地PDF全文翻译</b>: 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
-                            <li><b>教程3 Dalle-3画图</b>: 1.输入提示词, 2.点'图片生成'插件</li>
-                            <li>🎉 <b>新购买了1000个满速api,速度极大提升！免费畅享！也欢迎推荐给朋友和发布到社交平台</b></li>
-                            <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢！您的捐赠将用于网站维护和api购置</li>
+                            <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
+                            <li><b>教程2 | 本地PDF全文翻译</b>: 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
+                            <li><b>教程3 | Dalle-3画图</b>: 1.输入提示词, 2.点'图片生成'插件</li>
+                            <li>🎉 <b>新购1K个满速api,速度极大提升！免费畅享！也欢迎推荐给朋友和发布到社交平台</b></li>
+                            <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢!您的捐赠将用于网站维护和api购置</li>
                         </ol>
                     </div>
                 </div>
