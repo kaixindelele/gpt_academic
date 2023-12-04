@@ -71,22 +71,21 @@ def main():
                     <div class="column">
                         <ol start="1" style="text-align: left; line-height: 1.5;">
                             <li>我和<a href="https://github.com/binary-husky/gpt_academic">学术版GPT</a>作者qingxu，希望能提供一个学术工具，请大家不要滥用，更不要用于违法犯罪；</li>
-                            <li>请注意数据隐私保护，不要上传涉密和重要的个人数据；</li>    
-                            <li>bug或连不上请加群反馈931241203; 需提交<b>明确的操作步骤和报错信息截图</b>；</li>
+                            <li>请注意数据隐私保护，不要上传<b>涉密和重要的个人数据</b>；</li>    
+                            <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
-                            <li>⚠️ 有些地方需要魔法才能登录！感谢理解!</b></li>
-                            <li>🎉 <b>新购买了1000个满速api,速度极大提升！免费畅享！</b></li>
-                            
+                            <li>⚠️ 有些地方需要魔法才能登录！感谢理解!</b></li>                                                        
                         </ol>
                     </div>
                 </div>
                 <div class="content">     
                     <div class="column">
-                        <ol start="7" style="text-align: left; line-height: 1.5;">                            
+                        <ol start="6" style="text-align: left; line-height: 1.5;">                            
                             <li><b>教程1 Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li><b>教程2 本地PDF全文翻译</b>: 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件</li>
                             <li><b>教程3 Dalle-3画图</b>: 1.输入提示词, 2.点'图片生成'插件</li>
-                            <li>🎉 欢迎大家<b>捐赠</b>->右边的二维码,非常感谢！您的捐赠将用于网站维护和api购置</li>
+                            <li>🎉 <b>新购买了1000个满速api,速度极大提升！免费畅享！也欢迎推荐给朋友和发布到社交平台</b></li>
+                            <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢！您的捐赠将用于网站维护和api购置</li>
                         </ol>
                     </div>
                 </div>
