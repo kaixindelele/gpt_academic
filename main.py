@@ -75,7 +75,7 @@ def main():
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li>⚠️ <b>有些地方需要魔法才能登录！感谢理解!</b></li>
-                            <li>🎉 <b>现在有两个免费的网址了!大家收藏起来：</b> <a href='https://academic.chatpaper.top/'>学术版GPT主网址</a> | <a href='https://academic.chatwithpaper.org/'>学术版GPT备用网址</a></li>
+                            <li>🎉 <b>现在有两个免费的网址了!大家收藏起来：</b> <a href='https://academic.chatpaper.top/'>学术版GPT主网址</a> | <a href='https://academic.chatwithpaper.org/'>学术版GPT备用网址</a> [主站网速快，但编译arxiv的latex很慢，适合本地PDF翻译和润色，备用的计算速度快，但网速不稳定]</li>
                         </ol>
                     </div>
                 </div>
