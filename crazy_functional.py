@@ -130,38 +130,6 @@ def get_crazy_functions():
         print('Load function plugin failed')
 
     try:
-        from crazy_functions.图片生成 import 图片生成_DALLE3
-        function_plugins.update({
-            "图片生成（DALL-E3-免费畅享）": {
-                "Group": "对话",
-                "Color": "stop",
-                "AsButton": True,
-                "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-                "ArgsReminder": "在这里输入分辨率, 如256x256（默认）",  # 高级参数输入区的显示提示
-                "Info": "图片生成 | 输入参数字符串，提供图像的内容",
-                "Function": HotReload(图片生成_DALLE3)
-            },
-        })
-    except:
-        print('Load function plugin failed')
-
-    # try:
-    #     from crazy_functions.图片生成 import 图片修改_DALLE2
-    #     function_plugins.update({
-    #         "图片编辑（DALL-E3-输入图片修改）": {
-    #             "Group": "对话",
-    #             "Color": "stop",
-    #             "AsButton": True,
-    #             "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-    #             "ArgsReminder": "在这里输入分辨率, 如256x256（默认）",  # 高级参数输入区的显示提示
-    #             "Info": "图片生成 | 输入参数字符串，提供图像的内容",
-    #             "Function": HotReload(图片修改_DALLE2)
-    #         },
-    #     })
-    # except:
-    #     print('Load function plugin failed')
-
-    try:
         from crazy_functions.总结音视频 import 总结音视频
         function_plugins.update({
             "批量总结音视频（输入路径或上传压缩包）": {
@@ -172,20 +140,6 @@ def get_crazy_functions():
                 "ArgsReminder": "调用openai api 使用whisper-1模型, 目前支持的格式:mp4, m4a, wav, mpga, mpeg, mp3。此处可以输入解析提示，例如：解析为简体中文（默认）。",
                 "Info": "批量总结音频或视频 | 输入参数为路径",
                 "Function": HotReload(总结音视频)
-            }
-        })
-    except:
-        print('Load function plugin failed')
-
-    try:
-        from crazy_functions.数学动画生成manim import 动画生成
-        function_plugins.update({
-            "数学动画生成（Manim）": {
-                "Group": "对话",
-                "Color": "stop",
-                "AsButton": False,
-                "Info": "按照自然语言描述生成一个动画 | 输入参数是一段话",
-                "Function": HotReload(动画生成)
             }
         })
     except:
@@ -207,25 +161,12 @@ def get_crazy_functions():
         print('Load function plugin failed')
 
     try:
-        from crazy_functions.交互功能函数模板 import 交互功能模板函数
-        function_plugins.update({
-            "交互功能模板Demo函数（查找wallhaven.cc的壁纸）": {
-                "Group": "对话",
-                "Color": "stop",
-                "AsButton": False,
-                "Function": HotReload(交互功能模板函数)
-            }
-        })
-    except:
-        print('Load function plugin failed')
-
-    try:
         from crazy_functions.Latex输出PDF结果 import Latex英文纠错加PDF对比
         function_plugins.update({
             "Latex英文纠错+高亮修正位置 [需Latex]": {
                 "Group": "学术",
                 "Color": "stop",
-                "AsButton": False,
+                "AsButton": True,
                 "AdvancedArgs": True,
                 "ArgsReminder": "如果有必要, 请在此处追加更细致的矫错指令（使用英文）。",
                 "Function": HotReload(Latex英文纠错加PDF对比)
@@ -279,33 +220,6 @@ def get_crazy_functions():
             })
     except:
         print('Load function plugin failed')
-
-    try:
-        from crazy_functions.批量翻译PDF文档_NOUGAT import 批量翻译PDF文档
-        function_plugins.update({
-            "精准翻译PDF文档（NOUGAT）": {
-                "Group": "学术",
-                "Color": "stop",
-                "AsButton": False,
-                "Function": HotReload(批量翻译PDF文档)
-            }
-        })
-    except:
-        print('Load function plugin failed')
-
-    try:
-        from crazy_functions.函数动态生成 import 函数动态生成
-        function_plugins.update({
-            "动态代码解释器（CodeInterpreter）": {
-                "Group": "智能体",
-                "Color": "stop",
-                "AsButton": False,
-                "Function": HotReload(函数动态生成)
-            }
-        })
-    except:
-        print('Load function plugin failed')
-
 
 
     """

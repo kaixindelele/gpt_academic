@@ -113,8 +113,8 @@ def 解析PDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot,
             llm_kwargs=llm_kwargs,
             chatbot=chatbot, history=[],
             sys_prompt="Your job is to collect information from materials。",
-        )
-
+        )        
+        
         # 多线，翻译
         gpt_response_collection = yield from request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
             inputs_array=[

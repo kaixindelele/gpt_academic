@@ -7,7 +7,7 @@ ARXIV_CACHE_DIR = os.path.expanduser(f"~/arxiv_cache/")
 
 # =================================== 工具函数 ===============================================
 # 专业词汇声明  = 'If the term "agent" is used in this section, it should be translated to "智能体". '
-def switch_prompt(pfg, mode, more_requirement):
+def switch_prompt(pfg, mode, more_requirement='', title=''):
     """
     Generate prompts and system prompts based on the mode for proofreading or translating.
     Args:
@@ -19,6 +19,13 @@ def switch_prompt(pfg, mode, more_requirement):
     - sys_prompt_array: A list of strings containing prompts for system prompts.
     """
     n_split = len(pfg.sp_file_contents)
+    print("more_requirement:", more_requirement)
+    if len(more_requirement) > 0:
+        more_requirement = more_requirement.replace("--no-cache", "")
+        if len(more_requirement) > 0:
+            more_requirement = "More Requirement:" + more_requirement + "\n"
+    more_requirement += "\n For some specialized academic terms, please keep the original English text and do not translate them.\n"
+    print("last more_requirement:", more_requirement)
     if mode == 'proofread_en':
         inputs_array = [r"Below is a section from an academic paper, proofread this section." + 
                         r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + more_requirement +
@@ -26,11 +33,11 @@ def switch_prompt(pfg, mode, more_requirement):
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
         sys_prompt_array = ["You are a professional academic paper writer." for _ in range(n_split)]
     elif mode == 'translate_zh':
-        inputs_array = [r"Below is a section from an English academic paper, translate it into Chinese. " + more_requirement + 
+        inputs_array = [r"Below is a section with latex format from an English academic paper, translate it into Chinese. " + more_requirement + 
                         r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + 
                         r"Answer me only with the translated text:" + 
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
-        sys_prompt_array = ["You are a professional academic translator." for _ in range(n_split)]
+        sys_prompt_array = [f"You are a professional academic translator. The paper title is `{title}`" for _ in range(n_split)]
     else:
         assert False, "未知指令"
     return inputs_array, sys_prompt_array

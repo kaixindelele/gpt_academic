@@ -88,22 +88,50 @@ model_info = {
         "max_token": 4096,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
-    },
-    
-    "gpt-3.5-turbo-16k": {
+    },    
+
+    "gpt-3.5-turbo-0301": {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
-        "max_token": 1024*16,
+        "max_token": 4096,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },
+
 
     "gpt-3.5-turbo-0613": {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
         "max_token": 4096,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+
+    "gpt-3.5-turbo-1106": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 4096,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+
+    "gpt-3.5-turbo-0125": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 4096,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+
+    "gpt-3.5-turbo-16k": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 1024*16,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },
@@ -117,96 +145,7 @@ model_info = {
         "token_cnt": get_token_num_gpt35,
     },
 
-    "gpt-4": {
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": openai_endpoint,
-        "max_token": 8192,
-        "tokenizer": tokenizer_gpt4,
-        "token_cnt": get_token_num_gpt4,
-    },
 
-    "gpt-4-32k": {
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": openai_endpoint,
-        "max_token": 32768,
-        "tokenizer": tokenizer_gpt4,
-        "token_cnt": get_token_num_gpt4,
-    },
-
-    "gpt-3.5-random": {
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": openai_endpoint,
-        "max_token": 4096,
-        "tokenizer": tokenizer_gpt4,
-        "token_cnt": get_token_num_gpt4,
-    },
-    
-    # azure openai
-    "azure-gpt-3.5":{
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": azure_endpoint,
-        "max_token": 4096,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    },
-
-    "azure-gpt-4":{
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": azure_endpoint,
-        "max_token": 8192,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    },
-
-    # api_2d
-    "api2d-gpt-3.5-turbo": {
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": api2d_endpoint,
-        "max_token": 4096,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    },
-
-    "api2d-gpt-4": {
-        "fn_with_ui": chatgpt_ui,
-        "fn_without_ui": chatgpt_noui,
-        "endpoint": api2d_endpoint,
-        "max_token": 8192,
-        "tokenizer": tokenizer_gpt4,
-        "token_cnt": get_token_num_gpt4,
-    },
-
-    # 将 chatglm 直接对齐到 chatglm2
-    "chatglm": {
-        "fn_with_ui": chatglm_ui,
-        "fn_without_ui": chatglm_noui,
-        "endpoint": None,
-        "max_token": 1024,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    },
-    "chatglm2": {
-        "fn_with_ui": chatglm_ui,
-        "fn_without_ui": chatglm_noui,
-        "endpoint": None,
-        "max_token": 1024,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    },
-    "qianfan": {
-        "fn_with_ui": qianfan_ui,
-        "fn_without_ui": qianfan_noui,
-        "endpoint": None,
-        "max_token": 2000,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    },
 }
 
 # -=-=-=-=-=-=- 以下部分是新加入的模型，可能附带额外依赖 -=-=-=-=-=-=-

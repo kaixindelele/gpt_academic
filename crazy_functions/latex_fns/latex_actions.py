@@ -204,6 +204,28 @@ class LatexPaperFileGroup():
         return manifest
 
 
+def get_title_by_tex(merged_content):
+    # 匹配 \title{内容}，其中内容可能包含 \textbf{内容}
+    match = re.search(r'\\title\{(.*?)}', merged_content)
+    if match:
+        # 提取括号中的内容
+        title_content = match.group(1)
+        print("title_content:", title_content)
+        
+        # 检查是否有 \textbf 包裹的内容
+        textbf_match = re.search(r'\\textbf\{([^}]*)', title_content)
+        if textbf_match:
+            # 提取 \textbf 中的内容
+            title_content2 = textbf_match.group(1)
+            print("title_content2:", title_content2)
+            return textbf_match.group(1)
+        else:
+            # 如果没有 \textbf，直接返回匹配到的标题
+            return title_content
+    # 如果没有匹配到标题，返回空字符串
+    return ""
+
+
 def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, mode='proofread', switch_prompt=None, opts=[]):
     import time, os, re
     from ..crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
@@ -247,8 +269,10 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
     pfg.run_file_split(max_token_limit=1024)
     n_split = len(pfg.sp_file_contents)
 
+    title = get_title_by_tex(merged_content=merged_content)
     #  <-------- 根据需要切换prompt ----------> 
-    inputs_array, sys_prompt_array = switch_prompt(pfg, mode)
+    print("mode:", mode)
+    inputs_array, sys_prompt_array = switch_prompt(pfg, mode, title=title)
     inputs_show_user_array = [f"{mode} {f}" for f in pfg.sp_file_tag]
 
     if os.path.exists(pj(project_folder,'temp.pkl')):

@@ -74,7 +74,8 @@ def main():
                             <li>请注意数据隐私保护，不要上传<b>涉密和重要的个人数据</b>；</li>    
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
-                            <li>⚠️ 有些地方需要魔法才能登录！感谢理解!</b></li>                                                        
+                            <li>⚠️ <b>有些地方需要魔法才能登录！感谢理解!</b></li>
+                            <li>🎉 <b>现在有两个免费的网址了!大家收藏起来：</b> <a href='https://academic.chatpaper.top/'>学术版GPT主网址</a> | <a href='https://academic.chatwithpaper.org/'>学术版GPT备用网址</a></li>
                         </ol>
                     </div>
                 </div>
@@ -206,8 +207,8 @@ def main():
                             with gr.Row():
                                 dropdown = gr.Dropdown(dropdown_fn_list, value=r"打开插件列表", label="", show_label=False).style(container=False)
                             with gr.Row():
-                                plugin_advanced_arg = gr.Textbox(show_label=True, label="高级参数输入区", visible=False, 
-                                                                 placeholder="这里是特殊函数插件的高级参数输入区").style(container=False)
+                                plugin_advanced_arg = gr.Textbox(show_label=True, label="高级参数输入区：输入--no-cache重新翻译arxiv", visible=True, 
+                                                                 placeholder="这里是特殊函数插件的高级参数输入区").style(container=True)
                             with gr.Row():
                                 switchy_bt = gr.Button(r"请先从插件列表中选择", variant="secondary").style(size="sm")
                     with gr.Row():
@@ -224,7 +225,7 @@ def main():
                 with gr.Tab("更换模型 & Prompt", elem_id="interact-panel"):
                     md_dropdown = gr.Dropdown(AVAIL_LLM_MODELS, value=LLM_MODEL, label="更换LLM模型/请求源").style(container=False)
                     top_p = gr.Slider(minimum=-0, maximum=1.0, value=1.0, step=0.01,interactive=True, label="Top-p (nucleus sampling)",)
-                    temperature = gr.Slider(minimum=-0, maximum=2.0, value=1.0, step=0.01, interactive=True, label="Temperature",)
+                    temperature = gr.Slider(minimum=-0, maximum=2.0, value=0.0, step=0.01, interactive=True, label="Temperature",)
                     max_length_sl = gr.Slider(minimum=256, maximum=1024*32, value=4096, step=128, interactive=True, label="Local LLM MaxLength",)
                     system_prompt = gr.Textbox(show_label=True, lines=2, placeholder=f"System Prompt", label="System prompt", value=initial_prompt)
 

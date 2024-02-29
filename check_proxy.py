@@ -160,8 +160,8 @@ def warm_up_modules():
     with ProxyNetworkActivate("Warmup_Modules"):
         enc = model_info["gpt-3.5-turbo"]['tokenizer']
         enc.encode("模块预热", disallowed_special=())
-        enc = model_info["gpt-4"]['tokenizer']
-        enc.encode("模块预热", disallowed_special=())
+        # enc = model_info["gpt-4"]['tokenizer']
+        # enc.encode("模块预热", disallowed_special=())
 
 if __name__ == '__main__':
     import os
