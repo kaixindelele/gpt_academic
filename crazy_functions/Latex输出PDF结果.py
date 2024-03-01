@@ -24,7 +24,7 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
         more_requirement = more_requirement.replace("--no-cache", "")
         if len(more_requirement) > 0:
             more_requirement = "More Requirement:" + more_requirement + "\n"
-    more_requirement += "\n For some specialized academic terms, please keep the original English text and do not translate them.\n"
+    more_requirement += "\n For some special and rare professional terms, please add the original English term in parentheses after translation.\n"
     print("last more_requirement:", more_requirement)
     if mode == 'proofread_en':
         inputs_array = [r"Below is a section from an academic paper, proofread this section." + 
@@ -33,11 +33,12 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
         sys_prompt_array = ["You are a professional academic paper writer." for _ in range(n_split)]
     elif mode == 'translate_zh':
-        inputs_array = [r"Below is a section with latex format from an English academic paper, translate it into Chinese. " + more_requirement + 
+        inputs_array = [r"Below is a section with latex format from an English academic paper with title `"+ title +                       
+                        "`, translate it into Chinese. " + more_requirement + 
                         r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + 
                         r"Answer me only with the translated text:" + 
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
-        sys_prompt_array = [f"You are a professional academic translator. The paper title is `{title}`" for _ in range(n_split)]
+        sys_prompt_array = [f"You are a professional academic translator." for _ in range(n_split)]
     else:
         assert False, "未知指令"
     return inputs_array, sys_prompt_array
