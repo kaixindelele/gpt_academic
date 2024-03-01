@@ -735,7 +735,12 @@ def select_api_key(keys, llm_model):
     # 判断用户是不是VIP。
     try:
         with open('vip_apis.txt', 'r', encoding='utf8') as f:
-            vip_apis = f.read().split('\n')
+            vip_apis = f.read()
+            vip_apis = vip_apis.strip()
+            if "\n" in vip_apis:
+                vip_apis = vip_apis.split('\n')
+            elif "," in vip_apis:
+                vip_apis = vip_apis.split(',')
         if len(vip_apis) > 10:
             key_list = vip_apis
     except Exception as e:
