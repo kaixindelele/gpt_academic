@@ -742,19 +742,20 @@ def select_api_key(keys, llm_model):
         # print("读取VIP名单失败，将不会使用VIP列表", e)
         vip_apis = []
 
+    print("vip_apis_num:", len(vip_apis))
     try:
         with open('black_apis.txt', 'r', encoding='utf8') as f:
             black_apis = f.read().split('\n')
     except Exception as e:
         print("读取黑名单失败，将不会使用黑名单", e)
         black_apis = []
-
+    
     if llm_model.startswith('gpt-'):
         for k in key_list:
             # 在这儿判断这些key是否在黑名单中
             if is_openai_api_key(k) and k not in black_apis: 
                 avail_key_list.append(k)
-
+    
     if llm_model.startswith('api2d-'):
         for k in key_list:
             if is_api2d_key(k): avail_key_list.append(k)
@@ -765,7 +766,7 @@ def select_api_key(keys, llm_model):
 
     if len(avail_key_list) == 0:
         raise RuntimeError(f"您提供的api-key不满足要求，不包含任何可用于{llm_model}的api-key。您可能选择了错误的模型或请求源（右下角更换模型菜单中可切换openai,azure,claude,api2d等请求源）。")
-
+    print("live_apis_num:", len(avail_key_list))
     api_key = random.choice(avail_key_list) # 随机负载均衡
     print("current_selected_api_key:", api_key)
     return api_key
