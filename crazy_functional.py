@@ -172,6 +172,19 @@ def get_crazy_functions():
                 "Function": HotReload(Latex英文纠错加PDF对比)
             }
         })
+
+        from crazy_functions.Latex输出PDF结果 import Latex中文纠错加PDF对比
+        function_plugins.update({
+            "Latex中文纠错+高亮修正位置 [需Latex，适用于大论文]": {
+                "Group": "学术",
+                "Color": "stop",
+                "AsButton": True,
+                "AdvancedArgs": True,
+                "ArgsReminder": "如果有必要, 请在此处追加更细致的矫错指令（使用英文）。",
+                "Function": HotReload(Latex中文纠错加PDF对比)
+            }
+        })
+
         from crazy_functions.Latex输出PDF结果 import Latex翻译中文并重新编译PDF
         function_plugins.update({
             "Arxiv论文原生翻译（输入arxivID）[需Latex]": {
