@@ -74,28 +74,30 @@ def main():
                             <li>请注意数据隐私保护，不要上传<b>涉密和重要的个人数据</b>；</li>    
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
-                            <li>⚠️ <b>有些地方需要魔法才能登录！感谢理解!</b></li>
-                            <li>⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以暂时无法提供免费服务了，大家只能自己输入api使用了。大家等等新的羊毛吧~</li>                            
+                            <li>⚠️ <b>有些地方需要魔法才能登录！感谢理解!</b></li>                                                   
                         </ol>
                     </div>
                 </div>
                 <div class="content">     
                     <div class="column">
-                        <ol start="7" style="text-align: left; line-height: 1.5;">                            
+                        <ol start="6" style="text-align: left; line-height: 1.5;">                            
                             <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
-                            <li>⚠️ 现在网站每隔10分钟自动检测frp，如果出现网络报错，麻烦刷新一下就好了。</li>                            
-                            <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢!您的捐赠将用于网站维护和api购置</li>
+                            <li>⚠️ 现在网站每隔10分钟自动检测frp，如果出现网络报错，麻烦刷新一下就好了。</li>                                                    
+                            
+                            <li>⚠️⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以暂时无法提供免费服务了，大家只能自己输入api使用了。大家等等新的羊毛吧，到时候群里通知大家~</li>     
                         </ol>
                     </div>
                 </div>
-                <div class="image">
-                    <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%">
-                </div>
+                
             </div>
         </body>
         </html>
     """
+    # <div class="image">
+    #                 <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%">
+    #             </div>
+    # <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢!您的捐赠将用于网站维护和api购置</li>
     description =  "Github源代码开源和更新[地址🚀](https://github.com/binary-husky/gpt_academic), "
     description += "感谢热情的[开发者们❤️](https://github.com/binary-husky/gpt_academic/graphs/contributors)."
     description += "</br></br>常见问题请查阅[项目Wiki](https://github.com/binary-husky/gpt_academic/wiki), "
