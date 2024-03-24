@@ -75,7 +75,7 @@ def main():
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li>⚠️ <b>有些地方需要魔法才能登录！感谢理解!</b></li>
-                            <li>⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以后期可能无法免费提供了</li>                            
+                            <li>⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以暂时无法提供免费服务了，大家只能自己输入api使用了。大家等等新的羊毛吧~</li>                            
                         </ol>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ def main():
                     </div>
                 </div>
                 <div class="image">
-                    <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%;">
+                    <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%">
                 </div>
             </div>
         </body>
