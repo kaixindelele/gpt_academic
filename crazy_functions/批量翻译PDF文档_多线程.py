@@ -124,7 +124,7 @@ def 解析PDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot,
             chatbot=chatbot,
             history_array=[[paper_meta] for _ in paper_fragments],
             sys_prompt_array=[
-                "请你作为一个学术翻译，负责把学术论文的部分章节文本，准确翻译成中文。注意：1. 文章中的每一句话都要翻译，并且消除输入文本前后的无意义乱码，2. 请自动识别小章节标题(小标题长度不要超过20个字符，也不要少于3个字符)，并且用'### xxx'的markdown格式标记出来。" for _ in paper_fragments],
+                "请你作为一个学术翻译，负责把学术论文的部分章节文本，准确翻译成中文，并且按照规范的中文表述。注意：1. 文章中的每一句话都要翻译，并且消除输入文本前后的无意义乱码，2. 请自动识别小章节标题(小标题长度不要超过20个字符，也不要少于3个字符)，并且用'### xxx'的markdown格式标记出来。" for _ in paper_fragments],
             # max_workers=5  # OpenAI所允许的最大并行过载
         )
         gpt_response_collection_md = copy.deepcopy(gpt_response_collection)
