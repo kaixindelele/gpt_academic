@@ -85,18 +85,19 @@ def main():
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
                             <li>⚠️ 现在网站每隔10分钟自动检测frp，如果出现网络报错，麻烦刷新一下就好了。</li>                                                    
                             
-                            <li>⚠️⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以暂时无法提供免费服务了，大家只能自己输入api使用了。大家等等新的羊毛吧，到时候群里通知大家~</li>     
+                            <li>⚠️⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以暂时无法提供免费服务了，大家只能自己输入api使用了。大家等等新的羊毛吧，到时候群里通知大家~</li>
+                            <li>🎉 <b>0326. 刚才斥巨资，花了130元买了52个5刀，大家先用一天吧，后面可能尝试付费使用了。</li>
                         </ol>
-                    </div>
+                    </div>                    
                 </div>
-                
+                <div class="image">
+                            <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%">
+                </div>
             </div>
         </body>
         </html>
     """
-    # <div class="image">
-    #                 <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%">
-    #             </div>
+    
     # <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢!您的捐赠将用于网站维护和api购置</li>
     description =  "Github源代码开源和更新[地址🚀](https://github.com/binary-husky/gpt_academic), "
     description += "感谢热情的[开发者们❤️](https://github.com/binary-husky/gpt_academic/graphs/contributors)."
