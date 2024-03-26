@@ -483,10 +483,10 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
     """
     整合所有信息，选择LLM模型，生成http请求，为发送请求做准备
     """
-    if not is_any_api_key(llm_kwargs['api_key']):
-        raise AssertionError("你提供了错误的API_KEY。\n\n1. 临时解决方案：直接在输入区键入api_key，然后回车提交。\n\n2. 长效解决方案：在config.py中配置。")
+    # if not is_any_api_key(llm_kwargs['api_key']):
+    #     raise AssertionError("你提供了错误的API_KEY。\n\n1. 临时解决方案：直接在输入区键入api_key，然后回车提交。\n\n2. 长效解决方案：在config.py中配置。")
 
-    api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+    # api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
     # 先判断是否是敏感词：
     # 加载敏感词库：
     # 从 PKL 文件中读取并恢复 content 对象
@@ -500,44 +500,12 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
 
     # 根据system_prompt判断，如果是对话形式的，则需要判断
     if "Serve me as a writing and programming assistant." in system_prompt:
-        result, found_keywords = contains_sensitive_words(tokenized_text, sensitive_words)    
-        
-        if result:
-            print("包含敏感词：", found_keywords)
-            print("奇怪的分词：", tokenized_text)
-            # openai.proxy = proxies['https']
-            check_result = check_sensitive(inputs, zz_sensitive_words, sq_sensitive_words, key=api_key, llm_kwargs=llm_kwargs)['pass']
-            add_black_list(check_result, api_key)
-            if bool(check_result):
-                pass_flag = True
-            else:
-                pass_flag = False
-        else:
-            pass_flag = True  
-                
-        # 如果是敏感词，直接返回预设的回复
-        if pass_flag == False:                
-            from toolbox import black_list              # reject 并拉黑IP
-            from toolbox import black_num_list          # reject 的次数  
-            if llm_kwargs['client_ip'] not in black_list:
-                black_num_list.append(1)
-            else:
-                now_ip_index = black_list.index(llm_kwargs['client_ip'])
-                black_num_list[now_ip_index] += 1
-            if llm_kwargs['client_ip'] not in black_list:
-                black_list.append(llm_kwargs['client_ip'])  # reject 并拉黑IP
-            
-            max_reject_num = 3
-            now_ip_index = black_list.index(llm_kwargs['client_ip'])
-            raise AssertionError("禁止输入敏感词汇，若再次尝试您的IP将被本站永久封禁！另外请不要因为好奇，测试这个系统的漏洞！如果有人故意攻击，我们后面会关闭这个功能，只保留arxiv论文翻译。请大家共同珍惜这个免费的学术工具，对于文科的一些敏感词，我们已经努力做了二次检测了，如果还有误杀的，请多包涵。还有{}次机会！".format(max_reject_num-black_num_list[now_ip_index]))
-            
+        result, found_keywords = contains_sensitive_words(tokenized_text, sensitive_words)
     # 如果不是敏感词，正常输出：
     headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
+        "Content-Type": "application/json"
     }
     if API_ORG.startswith('org-'): headers.update({"OpenAI-Organization": API_ORG})
-    if llm_kwargs['llm_model'].startswith('azure-'): headers.update({"api-key": api_key})
 
     conversation_cnt = len(history) // 2
 
@@ -563,12 +531,7 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
     what_i_ask_now["content"] = inputs
     messages.append(what_i_ask_now)
     model = llm_kwargs['llm_model'].strip('api2d-')
-    # if model == "gpt-3.5-random": # 随机选择, 绕过openai访问频率限制
-    model = random.choice(["gpt-3.5-turbo", 'gpt-3.5-turbo-0301', 
-                           'gpt-3.5-turbo-0613', "gpt-3.5-turbo-1106", 
-                           "gpt-3.5-turbo-0125", "gpt-3.5-turbo-16k", 
-                           "gpt-3.5-turbo-16k-0613"])
-    # model = "Qwen1.5-14B-Chat-GPTQ-Int4"
+    model = "Qwen1.5-14B-Chat-GPTQ-Int4"
     logging.info("Random select model:" + model)
 
     payload = {

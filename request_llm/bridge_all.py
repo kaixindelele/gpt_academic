@@ -15,6 +15,8 @@ from toolbox import get_conf, trimmed_format_exc
 
 from .bridge_chatgpt import predict_no_ui_long_connection as chatgpt_noui
 from .bridge_chatgpt import predict as chatgpt_ui
+from .bridge_qwen_vllm import predict as qwen_vllm_ui
+from .bridge_qwen_vllm import predict_no_ui_long_connection as qwen_vllm_noui
 
 from .bridge_chatglm import predict_no_ui_long_connection as chatglm_noui
 from .bridge_chatglm import predict as chatglm_ui
@@ -50,6 +52,7 @@ class LazyloadTiktoken(object):
 # Endpoint 重定向
 API_URL_REDIRECT, AZURE_ENDPOINT, AZURE_ENGINE = get_conf("API_URL_REDIRECT", "AZURE_ENDPOINT", "AZURE_ENGINE")
 openai_endpoint = "https://api.openai.com/v1/chat/completions"
+qwen_endpoint = "http://localhost:9898/v1/chat/completions"
 api2d_endpoint = "https://openai.api2d.net/v1/chat/completions"
 newbing_endpoint = "wss://sydney.bing.com/sydney/ChatHub"
 if not AZURE_ENDPOINT.endswith('/'): AZURE_ENDPOINT += '/'
@@ -141,6 +144,15 @@ model_info = {
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
         "max_token": 1024 * 16,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+
+    "Qwen1.5-14B-Chat-GPTQ-Int4": {
+        "fn_with_ui": qwen_vllm_ui,
+        "fn_without_ui": qwen_vllm_noui,
+        "endpoint": qwen_endpoint,
+        "max_token": 1024 * 4,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },

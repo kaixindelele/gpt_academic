@@ -31,6 +31,7 @@ class GetONNXGLMHandle(LocalLLMHandle):
         from modelscope import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 
         model_id = 'qwen/Qwen-7B-Chat'
+        # model_id = 'Qwen1.5-14B-Chat-GPTQ-Int4'
         revision = 'v1.0.1'
         self._tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision, trust_remote_code=True)
         # use fp16
