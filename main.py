@@ -487,6 +487,7 @@ def main():
     # gradio的inbrowser触发不太稳定，回滚代码到原始的浏览器打开函数
     def run_delayed_tasks():
         import threading, webbrowser, time
+        print("export WEB_PORT=8886")
         print(f"如果浏览器没有自动打开，请复制并转到以下URL：")
         if DARK_MODE:   print(f"\t「暗色主题已启用（支持动态切换主题）」: http://localhost:{PORT}")
         else:           print(f"\t「亮色主题已启用（支持动态切换主题）」: http://localhost:{PORT}")

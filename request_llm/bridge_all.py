@@ -27,6 +27,9 @@ from .bridge_chatglm import predict as chatglm_ui
 from .bridge_qianfan import predict_no_ui_long_connection as qianfan_noui
 from .bridge_qianfan import predict as qianfan_ui
 
+from .bridge_cohere import predict as cohere_ui
+from .bridge_cohere import predict_no_ui_long_connection as cohere_noui
+
 colors = ['#FF00FF', '#00FFFF', '#FF0000', '#990099', '#009999', '#990044']
 
 class LazyloadTiktoken(object):
@@ -55,6 +58,7 @@ openai_endpoint = "https://api.openai.com/v1/chat/completions"
 qwen_endpoint = "http://localhost:9898/v1/chat/completions"
 api2d_endpoint = "https://openai.api2d.net/v1/chat/completions"
 newbing_endpoint = "wss://sydney.bing.com/sydney/ChatHub"
+cohere_endpoint = 'https://cohere.chatcoding.xyz/v1/chat'
 if not AZURE_ENDPOINT.endswith('/'): AZURE_ENDPOINT += '/'
 azure_endpoint = AZURE_ENDPOINT + f'openai/deployments/{AZURE_ENGINE}/chat/completions?api-version=2023-05-15'
 # 兼容旧版的配置
@@ -69,7 +73,7 @@ except:
 if openai_endpoint in API_URL_REDIRECT: openai_endpoint = API_URL_REDIRECT[openai_endpoint]
 if api2d_endpoint in API_URL_REDIRECT: api2d_endpoint = API_URL_REDIRECT[api2d_endpoint]
 if newbing_endpoint in API_URL_REDIRECT: newbing_endpoint = API_URL_REDIRECT[newbing_endpoint]
-
+if cohere_endpoint in API_URL_REDIRECT: cohere_endpoint = API_URL_REDIRECT[cohere_endpoint]
 
 # 获取tokenizer
 tokenizer_gpt35 = LazyloadTiktoken("gpt-3.5-turbo")
@@ -156,7 +160,15 @@ model_info = {
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },
-
+    # cohere
+    "command-r-plus": {
+        "fn_with_ui": cohere_ui,
+        "fn_without_ui": cohere_noui,
+        "endpoint": cohere_endpoint,
+        "max_token": 1024 * 4,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
 
 }
 

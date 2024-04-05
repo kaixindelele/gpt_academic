@@ -4,6 +4,8 @@ import time
 import inspect
 import re
 import os
+import uuid
+import logging
 import gradio
 import shutil
 import glob
@@ -699,7 +701,12 @@ def is_any_api_key(key):
             if is_any_api_key(k): return True
         return False
     else:
-        return is_openai_api_key(key) or is_api2d_key(key) or is_azure_api_key(key)
+        return is_openai_api_key(key) or is_api2d_key(key) or is_azure_api_key(key) or is_cohere_api_key(key)
+    
+def is_cohere_api_key(key):
+    API_MATCH_AZURE = re.match(r"[a-zA-Z0-9]{40}$", key)
+    return bool(API_MATCH_AZURE)
+
 
 def what_keys(keys):
     avail_key_list = {'OpenAI Key':0, "Azure Key":0, "API2D Key":0}
@@ -747,6 +754,19 @@ def select_api_key(keys, llm_model):
         # print("读取VIP名单失败，将不会使用VIP列表", e)
         vip_apis = []
 
+    # 判断有没有Cohere的api。
+    try:
+        with open('cohere_apis.txt', 'r', encoding='utf8') as f:
+            cohere_apis = f.read()
+            cohere_apis = cohere_apis.strip()
+            if "," in cohere_apis:
+                cohere_apis = cohere_apis.split(',')
+        if len(cohere_apis) > 10:
+            key_list = cohere_apis
+    except Exception as e:
+        # print("读取Cohere名单失败，将不会使用Cohere列表", e)
+        cohere_apis = []
+    print("cohere_apis:", len(cohere_apis))
     print("vip_apis_num:", len(vip_apis))
     try:
         with open('black_apis.txt', 'r', encoding='utf8') as f:
@@ -768,6 +788,10 @@ def select_api_key(keys, llm_model):
     if llm_model.startswith('azure-'):
         for k in key_list:
             if is_azure_api_key(k): avail_key_list.append(k)
+
+    if llm_model.startswith('command-') and len(cohere_apis) > 0:
+        for k in cohere_apis:
+            if is_cohere_api_key(k): avail_key_list.append(k)
 
     if len(avail_key_list) == 0:
         raise RuntimeError(f"您提供的api-key不满足要求，不包含任何可用于{llm_model}的api-key。您可能选择了错误的模型或请求源（右下角更换模型菜单中可切换openai,azure,claude,api2d等请求源）。")
@@ -1193,3 +1217,16 @@ def get_chat_default_kwargs():
 
     return default_chat_kwargs
 
+
+
+def log_chat(llm_model: str, input_str: str, output_str: str):
+    try:
+        if output_str and input_str and llm_model:
+            uid = str(uuid.uuid4().hex)
+            logging.info(f"[Model({uid})] {llm_model}")
+            input_str = input_str.rstrip('\n')
+            logging.info(f"[Query({uid})]\n{input_str}")
+            output_str = output_str.rstrip('\n')
+            logging.info(f"[Response({uid})]\n{output_str}\n\n")
+    except:
+        print(trimmed_format_exc())

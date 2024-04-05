@@ -140,6 +140,7 @@ def can_multi_process(llm):
     if llm.startswith('api2d-'): return True
     if llm.startswith('azure-'): return True
     if llm.startswith('Qwen'): return True
+    if llm.startswith('command'): return True
     return False
 
 def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
@@ -188,6 +189,8 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     # 屏蔽掉 chatglm的多线程，可能会导致严重卡顿
     if not can_multi_process(llm_kwargs['llm_model']):
         max_workers = 1
+    if 'command' in llm_kwargs['llm_model']:
+        max_workers = 8
     print("max_workers:", max_workers)
     executor = ThreadPoolExecutor(max_workers=max_workers)
     n_frag = len(inputs_array)
