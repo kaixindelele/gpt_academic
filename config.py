@@ -125,7 +125,29 @@ AUTHENTICATION = []
 
 # 如果需要在二级路径下运行（常规情况下，不要修改!!）（需要配合修改main.py才能生效!）
 CUSTOM_PATH = "/"
-
+AZURE_CFG_ARRAY = {
+    "azure-gpt-3.5": # 第一个模型，azure模型必须以"azure-"开头，注意您还需要将"azure-gpt-3.5"加入AVAIL_LLM_MODELS（模型下拉菜单）
+    {
+        "AZURE_ENDPOINT": "https://你亲手写的api名称.openai.azure.com/",
+        "AZURE_API_KEY": "cccccccccccccccccccccccccccccccc",
+        "AZURE_ENGINE": "填入你亲手写的部署名1",
+        "AZURE_MODEL_MAX_TOKEN": 4096,
+    },
+    "azure-gpt-4":  # 第二个模型，azure模型必须以"azure-"开头，注意您还需要将"azure-gpt-4"加入AVAIL_LLM_MODELS（模型下拉菜单）
+    {
+        "AZURE_ENDPOINT": "https://你亲手写的api名称.openai.azure.com/",
+        "AZURE_API_KEY": "dddddddddddddddddddddddddddddddd",
+        "AZURE_ENGINE": "填入你亲手写的部署名2",
+        "AZURE_MODEL_MAX_TOKEN": 8192,
+    },
+    "azure-gpt-3.5-16k":  # 第三个模型，azure模型必须以"azure-"开头，注意您还需要将"azure-gpt-3.5-16k"加入AVAIL_LLM_MODELS（模型下拉菜单）
+    {
+        "AZURE_ENDPOINT": "https://你亲手写的api名称.openai.azure.com/",
+        "AZURE_API_KEY": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "AZURE_ENGINE": "填入你亲手写的部署名3",
+        "AZURE_MODEL_MAX_TOKEN": 16384,
+    },
+}
 
 # HTTPS 秘钥和证书（不需要修改）
 SSL_KEYFILE = ""
