@@ -84,8 +84,8 @@ def main():
                         <ol start="7" style="text-align: left; line-height: 1.5;">                            
                             <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
-                            <li>⚠️ 现在网站每隔10分钟自动检测frp，如果出现网络报错，麻烦刷新一下就好了。</li>                                                                                
                             <li>⚠️⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以后期免费服务比较难坚持了~</li>
+                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>                            
                             <li>🎉 <b>0326. 刚才斥巨资，花了130元买了52个5刀，大家先用一天吧，后面可能尝试付费使用了。</li>
                         </ol>
                     </div>                    
