@@ -87,7 +87,8 @@ LLM_MODEL = "Qwen1.5-14B-Chat-GPTQ-Int4" # 可选 ↓↓↓
 AVAIL_LLM_MODELS = ["command-r-plus",
                     "gpt-3.5-turbo", 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo-0613',                     
                     "gpt-3.5-turbo-1106", "gpt-3.5-turbo-0125", "gpt-3.5-turbo-16k", 
-                    "gpt-3.5-turbo-16k-0613", "Qwen1.5-14B-Chat-GPTQ-Int4"]
+                    "gpt-3.5-turbo-16k-0613", 
+                    "Qwen1.5-14B-Chat-GPTQ-Int4"]
 # P.S. 其他可用的模型还包括 ["qianfan", "llama2", "qwen", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613",  "gpt-3.5-random"
 # "spark", "sparkv2", "chatglm_onnx", "claude-1-100k", "claude-2", "internlm", "jittorllms_pangualpha", "jittorllms_llama"]
 

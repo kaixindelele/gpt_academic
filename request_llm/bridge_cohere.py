@@ -18,6 +18,7 @@ import traceback
 import requests
 import importlib
 import random
+import numpy as np
 
 # config_private.py放自己的秘密如API和代理网址
 # 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
@@ -87,10 +88,17 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
     watch_dog_patience = 5 # 看门狗的耐心, 设置5秒即可
     headers, payload = generate_payload(inputs, llm_kwargs, history, system_prompt=sys_prompt, stream=True)
     retry = 0
+    endpoints = ['https://cohere-proxy-cohere-ekxzwzxrrp.us-west-1.fcapp.run/v1/chat',
+                 'https://cohere.chatcoding.xyz/v1/chat',
+                 'https://cohere-cohere-yxhslpivzp.us-east-1.fcapp.run/v1/chat',
+                 "https://cohere-cohere-pexhslpibj.eu-west-1.fcapp.run/v1/chat",
+                 ]
+    endpoint = random.choice(endpoints)
     while True:
         try:
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
+            print("endpoint:", endpoint)
             endpoint = verify_endpoint(model_info[llm_kwargs['llm_model']]['endpoint'])
             response = requests.post(endpoint, headers=headers, proxies=proxies,
                                     json=payload, stream=True, timeout=TIMEOUT_SECONDS); break
@@ -116,8 +124,8 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
             print("chunkjson:", chunkjson)
             if "Please wait and try again later" in chunkjson['message']:
                 print("等等")
-        if 'event_type' in chunkjson.keys():
-            if chunkjson['event_type'] == 'stream-start': continue
+        # if 'event_type' in chunkjson.keys():
+        if chunkjson['event_type'] == 'stream-start': continue
         if "event_type" in chunkjson.keys():
             if chunkjson['event_type'] == 'text-generation':
                 result += chunkjson["text"]
@@ -130,8 +138,8 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
                     if len(observe_window) >= 2:
                         if (time.time()-observe_window[1]) > watch_dog_patience:
                             raise RuntimeError("用户取消了程序。")
-        if 'event_type' in chunkjson.keys():
-            if chunkjson['event_type'] == 'stream-end': break
+        # if 'event_type' in chunkjson.keys():
+        if chunkjson['event_type'] == 'stream-end': break
     return result
 
 

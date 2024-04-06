@@ -74,19 +74,17 @@ def main():
                             <li>请注意数据隐私保护，不要上传<b>涉密和重要的个人数据</b>；</li>    
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
-                            <li>⚠️ <b>有些地方需要魔法才能登录！感谢理解!</b></li>
-                            <li>🎉 <b>0327. 我在本地部署了一个开源Qwen14B，勉强可以支撑免费的英-中本地PDF翻译。arXiv的latex翻译，可以左上角将模型更换为3.5。</b></i>
+                            <li>🎉 <b>0327. 我在本地部署了一个开源Qwen14B，勉强可以支撑免费的英-中本地PDF翻译。</b></i>
                         </ol>
                     </div>
                 </div>
                 <div class="content">     
                     <div class="column">
-                        <ol start="7" style="text-align: left; line-height: 1.5;">                            
+                        <ol start="6" style="text-align: left; line-height: 1.5;">                            
                             <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
-                            <li>⚠️⚠️ <b>0324.由于OpenAI近期取消了免费5刀，所以后期免费服务比较难坚持了~</li>
-                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>                            
-                            <li>🎉 <b>0326. 刚才斥巨资，花了130元买了52个5刀，大家先用一天吧，后面可能尝试付费使用了。</li>
+                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>
+                            <li>⚠️ <b>0407 gpt3.5都用完了，也买不起了。现在如果是要智力的对话和润色，可以选择command模型。</li>
                         </ol>
                     </div>                    
                 </div>
