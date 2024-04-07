@@ -244,13 +244,15 @@ def write_history_to_file(history, file_basename=None, file_fullname=None, auto_
             file_fullname = pj(get_log_folder(), f'GPT-Academic-{gen_time_str()}.md')
     os.makedirs(os.path.dirname(file_fullname), exist_ok=True)
     with open(file_fullname, 'w', encoding='utf8') as f:
-        f.write('# GPT-Academic Report\n')
+        f.write('# ')
         for i, content in enumerate(history):
             try:    
                 if type(content) != str: content = str(content)
             except:
                 continue
+            # 去除中间的标题。
             if i % 2 == 0 and auto_caption:
+                continue
                 f.write('## ')
             try:
                 f.write(content)

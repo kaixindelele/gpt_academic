@@ -38,11 +38,23 @@ def get_crazy_functions():
 
 
     function_plugins = {
-        "虚空终端": {
-            "Group": "对话|编程|学术|智能体",
+        # "虚空终端": {
+        #     "Group": "对话|编程|学术|智能体",
+        #     "Color": "stop",
+        #     "AsButton": False,
+        #     "Function": HotReload(虚空终端)
+        # },
+        "Markdown英译中（记得看上面的教程3！）": {
+            "Group": "学术",
             "Color": "stop",
-            "AsButton": False,
-            "Function": HotReload(虚空终端)
+            "AsButton": True,  # 加入下拉菜单中
+            "Info": "将英文Markdown文件翻译为中文 | 输入参数为路径或上传压缩包",
+            "AdvancedArgs": True,
+            "ArgsReminder":
+                "如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 " +
+                "例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: " +
+                'If the term "agent" is used in this section, it should be translated to "智能体". ',
+            "Function": HotReload(Markdown英译中)
         },
         "解析整个Python项目": {
             "Group": "编程",
@@ -90,13 +102,8 @@ def get_crazy_functions():
             "Function": HotReload(Latex中文润色)
         },
 
-        "批量Markdown中译英（输入路径或上传压缩包）": {
-            "Group": "编程",
-            "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "批量将Markdown文件中文翻译为英文 | 输入参数为路径或上传压缩包",
-            "Function": HotReload(Markdown中译英)
-        },
+        
+        
     }
 
     # -=--=- 尚未充分测试的实验性插件 & 需要额外依赖的插件 -=--=-
@@ -151,7 +158,7 @@ def get_crazy_functions():
             "Markdown翻译（指定翻译成何种语言）": {
                 "Group": "编程",
                 "Color": "stop",
-                "AsButton": False,
+                "AsButton": True,
                 "AdvancedArgs": True,
                 "ArgsReminder": "请输入要翻译成哪种语言，默认为Chinese。",
                 "Function": HotReload(Markdown翻译指定语言)

@@ -64,15 +64,26 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
             pfg.file_contents.append(file_content)
 
     #  <-------- 拆分过长的Markdown文件 ----------> 
-    pfg.run_file_split(max_token_limit=1500)
+    pfg.run_file_split(max_token_limit=1000)
     n_split = len(pfg.sp_file_contents)
+
+    more_req = plugin_kwargs.get("advanced_arg", "")
+    print("more_req:", more_req)
+    if len(more_req) == "":        
+        more_req = ''
 
     #  <-------- 多线程翻译开始 ----------> 
     if language == 'en->zh':
-        inputs_array = ["This is a Markdown file, translate it into Chinese, do not modify any existing Markdown commands:" + 
-                        f"\n\n{frag}" for frag in pfg.sp_file_contents]
-        inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
-        sys_prompt_array = ["You are a professional academic paper translator." for _ in range(n_split)]
+        if len(more_req) == 0:
+            inputs_array = ["This is a Markdown file, translate it into Chinese, do not modify any existing Markdown commands" + 
+                            f"\n\n{frag}" for frag in pfg.sp_file_contents]
+            inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
+            sys_prompt_array = ["You are a professional academic paper translator." for _ in range(n_split)]
+        else:
+            inputs_array = ["This is a Markdown file, translate it into Chinese, do not modify any existing Markdown commands, and you should follow this requirement:" + str(more_req) + "\n The text is " +  
+                            f"\n\n{frag}" for frag in pfg.sp_file_contents]
+            inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
+            sys_prompt_array = ["You are a professional academic paper translator." for _ in range(n_split)]
     elif language == 'zh->en':
         inputs_array = [f"This is a Markdown file, translate it into English, do not modify any existing Markdown commands:" + 
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
