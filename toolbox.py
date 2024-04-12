@@ -750,8 +750,10 @@ def select_api_key(keys, llm_model):
                 vip_apis = vip_apis.split('\n')
             elif "," in vip_apis:
                 vip_apis = vip_apis.split(',')
-        if len(vip_apis) > 10:
-            key_list = vip_apis
+            elif len(vip_apis) == 51:
+                vip_apis = [vip_apis]
+        
+        key_list = vip_apis
     except Exception as e:
         # print("读取VIP名单失败，将不会使用VIP列表", e)
         vip_apis = []
@@ -763,8 +765,6 @@ def select_api_key(keys, llm_model):
             cohere_apis = cohere_apis.strip()
             if "," in cohere_apis:
                 cohere_apis = cohere_apis.split(',')
-        if len(cohere_apis) > 10:
-            key_list = cohere_apis
     except Exception as e:
         # print("读取Cohere名单失败，将不会使用Cohere列表", e)
         cohere_apis = []

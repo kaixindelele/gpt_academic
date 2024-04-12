@@ -75,7 +75,7 @@ def main():
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li>🎉 <b>0327. 我在本地部署了一个开源Qwen14B，勉强可以支撑免费的英-中本地PDF翻译。</b></i>
-                            <li>⚠️ <b>0407 gpt3.5都用完了，也买不起了。现在如果是要智力的对话和润色，可以选择command模型。</b></li>
+                            <li>⚠️ <b>0412 有几位朋友打赏了网站，因此买了100刀3.5，感谢。现在如果是要智力的对话和润色，可以选择command模型。</b></li>
                         </ol>
                     </div>
                 </div>

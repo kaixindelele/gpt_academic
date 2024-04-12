@@ -564,10 +564,7 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
     messages.append(what_i_ask_now)
     model = llm_kwargs['llm_model'].strip('api2d-')
     # if model == "gpt-3.5-random": # 随机选择, 绕过openai访问频率限制
-    model = random.choice(["gpt-3.5-turbo", 'gpt-3.5-turbo-0301', 
-                           'gpt-3.5-turbo-0613', "gpt-3.5-turbo-1106", 
-                           "gpt-3.5-turbo-0125", "gpt-3.5-turbo-16k", 
-                           "gpt-3.5-turbo-16k-0613"])
+    model = random.choice(["gpt-3.5-turbo-0125"])
     # model = "Qwen1.5-14B-Chat-GPTQ-Int4"
     logging.info("Random select model:" + model)
 
