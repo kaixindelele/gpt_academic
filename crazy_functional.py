@@ -45,7 +45,7 @@ def get_crazy_functions():
         #     "AsButton": False,
         #     "Function": HotReload(虚空终端)
         # },
-        "本地PDF2PDF翻译（记得看上面的教程4！）": {
+        "本地PDF2PDF翻译（记得看上面的教程3！）": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,  # 加入下拉菜单中
