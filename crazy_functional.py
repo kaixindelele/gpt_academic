@@ -33,6 +33,7 @@ def get_crazy_functions():
     from crazy_functions.Latex全文润色 import Latex英文纠错
     from crazy_functions.Latex全文翻译 import Latex中译英
     from crazy_functions.Latex全文翻译 import Latex英译中
+    from crazy_functions.PDF2PDF翻译 import 批量PDF2PDF文档
     from crazy_functions.批量Markdown翻译 import Markdown中译英
     from crazy_functions.虚空终端 import 虚空终端
 
@@ -44,6 +45,19 @@ def get_crazy_functions():
         #     "AsButton": False,
         #     "Function": HotReload(虚空终端)
         # },
+        "本地PDF2PDF翻译（记得看上面的教程4！）": {
+            "Group": "学术",
+            "Color": "stop",
+            "AsButton": True,  # 加入下拉菜单中
+            "Info": "将英文PDF文件直接翻译为中文 | 输入参数为路径或上传压缩包",
+            "AdvancedArgs": True,
+            "ArgsReminder":
+                "如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 " +
+                "例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: " +
+                'If the term "agent" is used in this section, it should be translated to "智能体". ',
+            "Function": HotReload(批量PDF2PDF文档)
+        },
+
         "Markdown英译中（记得看上面的教程3！）": {
             "Group": "学术",
             "Color": "stop",

@@ -52,6 +52,9 @@ class ChatBotWithCookies(list):
 
     def get_cookies(self):
         return self._cookies
+    
+    def get_user(self):
+        return self._cookies.get("user_name", default_user_name)
 
 black_list = []
 black_num_list = []
@@ -244,7 +247,7 @@ def write_history_to_file(history, file_basename=None, file_fullname=None, auto_
             file_fullname = pj(get_log_folder(), f'GPT-Academic-{gen_time_str()}.md')
     os.makedirs(os.path.dirname(file_fullname), exist_ok=True)
     with open(file_fullname, 'w', encoding='utf8') as f:
-        f.write('# ')
+        f.write('#')
         for i, content in enumerate(history):
             try:    
                 if type(content) != str: content = str(content)
@@ -801,6 +804,17 @@ def select_api_key(keys, llm_model):
     api_key = random.choice(avail_key_list) # 随机负载均衡
     print("current_selected_api_key:", api_key)
     return api_key
+
+def get_upload_folder(user=default_user_name, tag=None):
+    PATH_PRIVATE_UPLOAD = get_conf("PATH_PRIVATE_UPLOAD")
+    if user is None:
+        user = default_user_name
+    if tag is None or len(tag) == 0:
+        target_path_base = pj(PATH_PRIVATE_UPLOAD, user)
+    else:
+        target_path_base = pj(PATH_PRIVATE_UPLOAD, user, tag)
+    return target_path_base
+
 
 def read_env_variable(arg, default_value):
     """
