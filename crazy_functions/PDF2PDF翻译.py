@@ -11,6 +11,7 @@ from colorful import *
 import copy
 import os
 import math
+import random
 
 @CatchException
 def 批量PDF2PDF文档(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_request):
@@ -68,8 +69,8 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         import requests, json, os
         markdown_dir = get_log_folder(plugin_name="pdf_ocr")
         doc2x_api_key = DOC2X_API_KEY
-        if type(doc2x_api_key) is list:
-            doc2x_api_key = doc2x_api_key[-1]
+        if type(doc2x_api_key) is list:            
+            doc2x_api_key = random.choice(doc2x_api_key)
         url = "https://api.doc2x.noedgeai.com/api/v1/pdf"
 
         chatbot.append((None, "加载PDF文件，发送至DOC2X解析..."))
@@ -93,6 +94,8 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         else:
             raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res.text)))
         uuid = res_json[0]['uuid']
+        if "pages limit exceeded" in res_json[0]['status']:
+            raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res_json[0])))
         to = "md" # latex, md, docx
         url = "https://api.doc2x.noedgeai.com/api/export"+"?request_id="+uuid+"&to="+to
 
@@ -155,7 +158,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             preview_fp = os.path.join(ex_folder, file_name)
             with open(preview_fp, 'w', encoding='utf8') as f:
                 f.write(html_template)
-            promote_file_to_downloadzone(preview_fp, chatbot=chatbot)
+            # promote_file_to_downloadzone(preview_fp, chatbot=chatbot)
             promote_file_to_downloadzone(zip_fp, chatbot=chatbot)
             yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
     md_zip_path = yield from pdf2markdown(fp)

@@ -45,11 +45,11 @@ def get_crazy_functions():
         #     "AsButton": False,
         #     "Function": HotReload(虚空终端)
         # },
-        "本地PDF2PDF翻译（记得看上面的教程4！）": {
+        "本地PDF2PDF翻译（记得看上面的教程3！）": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,  # 加入下拉菜单中
-            "Info": "将英文PDF文件直接翻译为中文 | 输入参数为路径或上传压缩包",
+            "Info": "将英文PDF文件直接翻译为中文 | 免去手动去doc2x传输",
             "AdvancedArgs": True,
             "ArgsReminder":
                 "如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 " +

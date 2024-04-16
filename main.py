@@ -84,8 +84,9 @@ def main():
                         <ol start="7" style="text-align: left; line-height: 1.5;">                            
                             <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
-                            <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染公式 <a href='https://htmlpreview.github.io/?https://github.com/Mathpix/mathpix-markdown-it/blob/master/examples/html/input-mmd-to-html.html'>md2web</a>，或vscode插件"Markdown Preview Enhanced"</li>
-                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>                            
+                            <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染公式 <a href='https://htmlpreview.github.io/?https://github.com/Mathpix/mathpix-markdown-it/blob/master/examples/html/input-mmd-to-html.html'>md2web</a>，或vscode插件"Markdown Preview Enhanced"（主推！）</li>
+                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>
+                            <li> 0416 如果PDF2PDF报错，麻烦手动去doc2x转换md，然后将md文件传入后，选MD翻译插件</li>
                         </ol>
                     </div>
                 </div>
