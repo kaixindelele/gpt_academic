@@ -71,6 +71,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         doc2x_api_key = DOC2X_API_KEY
         if type(doc2x_api_key) is list:            
             doc2x_api_key = random.choice(doc2x_api_key)
+        print("current_doc2x_api: xxxx-", doc2x_api_key[-8:])
         url = "https://api.doc2x.noedgeai.com/api/v1/pdf"
 
         chatbot.append((None, "加载PDF文件，发送至DOC2X解析..."))
@@ -95,7 +96,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res.text)))
         uuid = res_json[0]['uuid']
         if "pages limit exceeded" in res_json[0]['status']:
-            raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res_json[0])))
+            raise RuntimeError(format("api额度用完，麻烦自己去doc2x转成md，在用MD翻译插件。[ERROR] status code: %d, body: %s, api: xxx-%s" % (res.status_code, res_json[0], doc2x_api_key[-6:])))
         to = "md" # latex, md, docx
         url = "https://api.doc2x.noedgeai.com/api/export"+"?request_id="+uuid+"&to="+to
 
