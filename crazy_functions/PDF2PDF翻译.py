@@ -88,6 +88,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         import requests, json, os
         markdown_dir = get_log_folder(plugin_name="pdf_ocr")
         doc2x_api_key = DOC2X_API_KEY
+<<<<<<< HEAD
         if '\n' in doc2x_api_key[0]:
             doc2x_api_key = doc2x_api_key[0].split('\n')
             print("all_docs:", doc2x_api_key)
@@ -111,6 +112,11 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             else:
                 raise RuntimeError("目前doc2x的api已用完，请手动去doc2x网页转编辑，然后用md翻译。")
                     
+=======
+        if type(doc2x_api_key) is list:            
+            doc2x_api_key = random.choice(doc2x_api_key)
+        print("current_doc2x_api: xxxx-", doc2x_api_key[-8:])
+>>>>>>> d73562e783b24b9c82462f189e38d8e6a9fb3126
         url = "https://api.doc2x.noedgeai.com/api/v1/pdf"
 
         chatbot.append((None, "加载PDF文件，发送至DOC2X解析..."))
@@ -135,10 +141,14 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res.text)))
         uuid = res_json[0]['uuid']
         if "pages limit exceeded" in res_json[0]['status']:
+<<<<<<< HEAD
             add_doc_black_list(res_json[0]['status'], doc2x_api_key)
             
             raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res_json[0])))
 
+=======
+            raise RuntimeError(format("api额度用完，麻烦自己去doc2x转成md，在用MD翻译插件。[ERROR] status code: %d, body: %s, api: xxx-%s" % (res.status_code, res_json[0], doc2x_api_key[-6:])))
+>>>>>>> d73562e783b24b9c82462f189e38d8e6a9fb3126
         to = "md" # latex, md, docx
         url = "https://api.doc2x.noedgeai.com/api/export"+"?request_id="+uuid+"&to="+to
 
