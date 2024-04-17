@@ -75,17 +75,17 @@ def main():
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li>🎉 <b>0327. 我在本地部署了一个开源Qwen14B，勉强可以支撑免费的英-中本地PDF翻译。</b></i>
-                            <li>🎉 <b>0416 有几位朋友打赏了网站，因此买了100刀GPT3.5，感谢。只要有朋友打赏，就可以继续免费下去。3.5的使用在右上角切换任意GPT模型</b></li>
+                            <li>🎉 <b>0416 有几位朋友打赏了网站，因此买了100刀GPT3.5，感谢。只要有朋友打赏，就可以继续免费下去。在左上角“模型”处，切换任意GPT3.5模型</b></li>
                         </ol>
                     </div>
                 </div>
                 <div class="content">     
                     <div class="column">
-                        <ol start="7" style="text-align: left; line-height: 1.5;">                            
+                        <ol start="7" style="text-align: left; line-height: 1.5;">  
+                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>                          
                             <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
-                            <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染公式 <a href='https://htmlpreview.github.io/?https://github.com/Mathpix/mathpix-markdown-it/blob/master/examples/html/input-mmd-to-html.html'>md2web</a>，或vscode插件"Markdown Preview Enhanced"（主推！）</li>
-                            <li>🎉 0406 大家可以试试免费版的command模型，它的并发比较小，对话智力还可以，暂时不主推。</li>
+                            <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染：vscode插件"Markdown Preview Enhanced"（保姆级教程：<a href='https://zhuanlan.zhihu.com/p/692337102'>知乎</a> ）</li>                            
                             <li> 0416 如果PDF2PDF报错，麻烦手动去doc2x转换md，然后将md文件传入后，选MD翻译插件</li>
                         </ol>
                     </div>

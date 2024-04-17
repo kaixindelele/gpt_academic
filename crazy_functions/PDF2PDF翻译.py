@@ -63,14 +63,54 @@ def 批量PDF2PDF文档(txt, llm_kwargs, plugin_kwargs, chatbot, history, system
         yield from update_ui_lastest_msg("GROBID服务不可用，请检查config中的GROBID_URL。作为替代，现在将执行效果稍差的旧版代码。", chatbot, history, delay=3)
         yield from 解析PDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt)
 
+def add_doc_black_list(result, api_key):
+    print("result:", result)
+    result = str(result)
+    if "pages limit exceeded" in result:
+        # 先读取现有的黑名单，如果没有则加进去：
+        cur_black_list = []
+        try:
+            with open('doc_black_apis.txt', 'r') as f:
+                for line in f.readlines():
+                    cur_black_list.append(line.strip())
+        except FileNotFoundError:
+            with open('doc_black_apis.txt', 'w') as f:
+                f.write("")
+
+        if api_key not in cur_black_list:
+            print("add black list:", api_key)
+            with open('doc_black_apis.txt', 'a+') as f:
+                f.write(api_key + '\n')
+
 def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, DOC2X_API_KEY, user_request):
 
     def pdf2markdown(filepath):
         import requests, json, os
         markdown_dir = get_log_folder(plugin_name="pdf_ocr")
         doc2x_api_key = DOC2X_API_KEY
-        if type(doc2x_api_key) is list:            
-            doc2x_api_key = random.choice(doc2x_api_key)
+        if '\n' in doc2x_api_key[0]:
+            doc2x_api_key = doc2x_api_key[0].split('\n')
+            print("all_docs:", doc2x_api_key)
+        if type(doc2x_api_key) is list:     
+            # 这里先查看是否有doc的black api 
+            try:
+                with open('doc_black_apis.txt', 'r', encoding='utf8') as f:
+                    black_apis = f.read().split('\n')
+            except Exception as e:
+                print("读取黑名单失败，将不会使用黑名单", e)
+                black_apis = []
+            avail_key_list = []
+            for k in doc2x_api_key:
+                # 在这儿判断这些key是否在黑名单中
+                if k not in black_apis: 
+                    avail_key_list.append(k)
+            if len(avail_key_list) > 0:        
+                doc2x_api_key = random.choice(avail_key_list)
+                print("doc2x_api_key:", doc2x_api_key)
+
+            else:
+                raise RuntimeError("目前doc2x的api已用完，请手动去doc2x网页转编辑，然后用md翻译。")
+                    
         url = "https://api.doc2x.noedgeai.com/api/v1/pdf"
 
         chatbot.append((None, "加载PDF文件，发送至DOC2X解析..."))
@@ -95,7 +135,10 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res.text)))
         uuid = res_json[0]['uuid']
         if "pages limit exceeded" in res_json[0]['status']:
+            add_doc_black_list(res_json[0]['status'], doc2x_api_key)
+            
             raise RuntimeError(format("[ERROR] status code: %d, body: %s" % (res.status_code, res_json[0])))
+
         to = "md" # latex, md, docx
         url = "https://api.doc2x.noedgeai.com/api/export"+"?request_id="+uuid+"&to="+to
 
@@ -147,7 +190,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
                 f.write(content)
             # 生成包含图片的压缩包
             dest_folder = get_log_folder(chatbot.get_user())
-            zip_name = '翻译后的带图文档.zip'
+            zip_name = '翻译后的带图文档-只用下载它即可.zip'
             zip_folder(source_folder=ex_folder, dest_folder=dest_folder, zip_name=zip_name)
             zip_fp = os.path.join(dest_folder, zip_name)
             # 生成在线预览html
