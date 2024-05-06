@@ -58,7 +58,7 @@ def get_crazy_functions():
             "Function": HotReload(批量PDF2PDF文档)
         },
 
-        "Markdown英译中（记得看上面的教程3！）": {
+        "Markdown英译中（术语库可以在高级参数输入区添加）": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,  # 加入下拉菜单中
