@@ -48,10 +48,11 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
         # 然后再读取术语的部分：字典和剩余指令
         user_term_dict = extract_dict_from_string(more_requirement)
         user_prompt = extract_exclude_dict_from_string(more_requirement)
-        # 如果有术语，但没有提示词，则默认给一个提示词：
-        if len(user_term_dict) > 0:
-            if len(user_prompt.strip())==0:
-                user_prompt = "基于上面的术语库，把对应的论文章节翻译成地道的中文表达，并且保持LaTeX格式的准确性"
+        user_prompt = user_prompt.strip()
+        # # 如果有术语，但没有提示词，则默认给一个提示词：
+        # if len(user_term_dict) > 0:
+        #     if len(user_prompt.strip())==0:
+        #         user_prompt = "基于上面的术语库，把对应的论文章节翻译成地道的中文表达，并且保持LaTeX格式的准确性"
 
         # 读取本地默认术语    
         with open('all_terms.json', 'r') as file:
@@ -96,11 +97,12 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
             cur_term = '```' + str(cur_term) + '```'
             cur_input = f"""
             Below is a section with latex format from an English academic paper with title `{title}`, translate it into Chinese.You should translate it into authentic Chinese based on the following terms: {cur_term}\n
-            For some special and rare professional terms, please add the original English term in parentheses after translation.
-            {user_prompt}.\n
+            For special or rare professional terms, you should add the original English terms in parentheses after translation. \n
+            {user_prompt}\n
+            Please keep the accuracy of the output format with Latex.\n
             Do not modify any latex command such as \section, \cite, \begin, \item and equations.
             Answer me only with the translated text:\n\n
-            {frag}"""
+            `{frag}`"""
             inputs_array.append(cur_input)
 
 
