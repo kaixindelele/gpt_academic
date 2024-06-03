@@ -2,8 +2,30 @@ from toolbox import update_ui, trimmed_format_exc, get_conf, get_log_folder, pro
 from toolbox import CatchException, report_execption, update_ui_lastest_msg, zip_result, gen_time_str
 from functools import partial
 import glob, os, requests, time
+import json, re
 pj = os.path.join
 ARXIV_CACHE_DIR = os.path.expanduser(f"~/arxiv_cache/")
+
+def extract_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')
+        term_dict = eval(dict_str)
+        return term_dict
+    else:
+        return {}
+
+def extract_exclude_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')        
+        return term_str.replace(dict_str, '')
+    else:
+        return term_str
 
 # =================================== 工具函数 ===============================================
 # 专业词汇声明  = 'If the term "agent" is used in this section, it should be translated to "智能体". '
@@ -19,9 +41,28 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
     - sys_prompt_array: A list of strings containing prompts for system prompts.
     """
     n_split = len(pfg.sp_file_contents)
-    print("more_requirement:", more_requirement)
+    print("more_requirement:", more_requirement)    
     if len(more_requirement) > 0:
+        # 先消除no-cache的内容
         more_requirement = more_requirement.replace("--no-cache", "")
+        # 然后再读取术语的部分：字典和剩余指令
+        user_term_dict = extract_dict_from_string(more_requirement)
+        user_prompt = extract_exclude_dict_from_string(more_requirement)
+        # 如果有术语，但没有提示词，则默认给一个提示词：
+        if len(user_term_dict) > 0:
+            if len(user_prompt.strip())==0:
+                user_prompt = "基于上面的术语库，把对应的论文章节翻译成地道的中文表达，并且保持LaTeX格式的准确性"
+
+        # 读取本地默认术语    
+        with open('all_terms.json', 'r') as file:
+            default_term_dict = json.load(file)
+
+        # 访问数据
+        print("default_term_dict:", default_term_dict)
+
+        # 合并两个术语字典：
+        default_term_dict.update(user_term_dict)
+
         if len(more_requirement) > 0:
             more_requirement = "More Requirement:" + more_requirement + "\n"
     more_requirement += "\n For some special and rare professional terms, please add the original English term in parentheses after translation.\n"
@@ -40,11 +81,29 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
         sys_prompt_array = ["You are a professional Chinese academic paper proofreader." for _ in range(n_split)]
     elif mode == 'translate_zh':
-        inputs_array = [r"Below is a section with latex format from an English academic paper with title `"+ title +                       
-                        "`, translate it into Chinese. " + more_requirement + 
-                        r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + 
-                        r"Answer me only with the translated text:" + 
-                        f"\n\n{frag}" for frag in pfg.sp_file_contents]
+        # inputs_array = [r"Below is a section with latex format from an English academic paper with title `"+ title +                       
+        #                 "`, translate it into Chinese. " + more_requirement + 
+        #                 r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + 
+        #                 r"Answer me only with the translated text:" + 
+        #                 f"\n\n{frag}" for frag in pfg.sp_file_contents]
+        inputs_array = []
+        for frag in pfg.sp_file_contents:
+            cur_term = {}
+            for key, value in default_term_dict.items():
+                if key in frag:
+                    cur_term.update({key:value})
+            print("cur_term:", cur_term)
+            cur_term = '```' + str(cur_term) + '```'
+            cur_input = f"""
+            Below is a section with latex format from an English academic paper with title `{title}`, translate it into Chinese.You should translate it into authentic Chinese based on the following terms: {cur_term}\n
+            For some special and rare professional terms, please add the original English term in parentheses after translation.
+            {user_prompt}.\n
+            Do not modify any latex command such as \section, \cite, \begin, \item and equations.
+            Answer me only with the translated text:\n\n
+            {frag}"""
+            inputs_array.append(cur_input)
+
+
         sys_prompt_array = [f"You are a professional academic translator." for _ in range(n_split)]
     else:
         assert False, "未知指令"

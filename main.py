@@ -75,9 +75,9 @@ def main():
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li>🎉 <b>0327. 本地部署了一个开源Qwen14B，可以适用英-中翻译。</b></i>
-                            <li>🎉 0406 大家可以试试免费版的command模型，对话智力还行。</li>
-                            <li>🎉 <b>0416 有朋友打赏了网站，因此买了100刀GPT3.5，感谢。只要有朋友持续打赏，就可以继续无注册-免费下去。在左上角“模型”处，切换任意GPT3.5模型</b></li>
+                            <li>🎉 0406 大家可以试试免费版的command模型，对话智力还行。</li>                            
                             <li> 0506 另外安利一个强大的PDF文档解析+公式识别工具：<a href='https://simpletex.cn/ai/latex_ocr'>simpletex</a></li>
+                            <li>🎉 <b>0604 目前还有100刀额度的GPT3.5，只要有朋友持续打赏，就可以继续无注册-免费下去。可以在左上角“模型”处，切换任意GPT3.5模型</b></li>
                         </ol>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ def main():
                             <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
                             <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染：vscode插件"Markdown Preview Enhanced"（保姆级教程：<a href='https://zhuanlan.zhihu.com/p/692337102'>知乎</a> ）</li>
                             <li> 0416 如果PDF2PDF报错，麻烦手动去<a href='https://doc2x.com/login?invite_code=ZHDAPC'>Doc2X</a>转换md，然后将md文件传入后，选MD翻译插件（注册时，填我的邀请码ZHDAPC，可以获得更高的额度）</li>
-                            <li>🎉 <b>0507 本地PDF翻译已经支持术语库，在右下角高级参数输入区填入，格式为字典，比如```{"agent": "智能体", "transformer": "transformer"}```</li>
+                            <li>🎉 <b>0604 翻译已经支持术语库，在右下角高级参数输入区填入，格式为字典，推荐输入一个大的术语库，注意英文引号，格式如下：```{"agent": "智能体", "transformer": "transformer"}```</li>
                             
                         </ol>
                     </div>

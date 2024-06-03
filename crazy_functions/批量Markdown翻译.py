@@ -1,4 +1,5 @@
 import glob, shutil, os, re, logging
+import json
 from toolbox import update_ui, trimmed_format_exc, gen_time_str, disable_auto_promotion
 from toolbox import CatchException, report_execption, get_log_folder
 from toolbox import write_history_to_file, promote_file_to_downloadzone
@@ -50,6 +51,27 @@ class PaperFileGroup():
                 f.write(res)
         return manifest
 
+def extract_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')
+        term_dict = eval(dict_str)
+        return term_dict
+    else:
+        return {}
+
+def extract_exclude_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')        
+        return term_str.replace(dict_str, '')
+    else:
+        return term_str
+
 def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, language='en'):
     from .crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 
@@ -68,6 +90,24 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
     n_split = len(pfg.sp_file_contents)
 
     more_req = plugin_kwargs.get("advanced_arg", "")
+    # 提取术语的字典和剩余指令
+    user_term_dict = extract_dict_from_string(more_req)
+    user_prompt = extract_exclude_dict_from_string(more_req)
+    # 如果有术语，但没有提示词，则默认给一个提示词：
+    if len(user_term_dict) > 0:
+        if len(user_prompt.strip())==0:
+            user_prompt = "基于上面的术语库，把对应的论文章节翻译成地道的中文表达，并且保持格式的准确性"
+
+    # 读取本地默认术语    
+    with open('all_terms.json', 'r') as file:
+        default_term_dict = json.load(file)
+
+    # 访问数据
+    print("default_term_dict:", default_term_dict)
+
+    # 合并两个术语字典：
+    default_term_dict.update(user_term_dict)
+
     print("more_req:", more_req)
     if len(more_req) == "":        
         more_req = ''
@@ -98,6 +138,32 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
                             ```
                             The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n                            
                             """ for frag in pfg.sp_file_contents]
+
+            # 这里的列表就得详细的循环：
+            inputs_array = []
+            for frag in pfg.sp_file_contents:
+                cur_term = {}
+                for key, value in default_term_dict.items():
+                    if key in frag:
+                        cur_term.update({key:value})
+                print("cur_term:", cur_term)
+                cur_term = '```' + str(cur_term) + '```'
+                cur_input = f"""
+                This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {cur_term}\n
+
+                {user_prompt}.\n
+                                Some requests for translation are as follows:
+                                - Please keep these terms accurate when translating.
+                                - Please keep the chapter title text accurate and clear.
+                                - Please keep the accuracy of the output format in Markdown format.
+                                \n
+                                Your output format is 
+                                ```markdown
+                                translated text.
+                                ```
+                                The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n                            
+                                """
+                inputs_array.append(cur_input)
 
             inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
             sys_prompt_array = ["You are a professional academic paper translator." for _ in range(n_split)]
@@ -222,9 +288,6 @@ def Markdown英译中(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_p
         return
 
     yield from 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, language='en->zh')
-
-
-
 
 
 @CatchException
