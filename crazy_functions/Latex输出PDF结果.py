@@ -94,15 +94,16 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
                 if key in frag:
                     cur_term.update({key:value})
             print("cur_term:", cur_term)
-            cur_term = '```' + str(cur_term) + '```'
+            cur_term = '`' + str(cur_term) + '`'
             cur_input = f"""
-            Below is a section with latex format from an English academic paper with title `{title}`, translate it into Chinese.You should translate it into authentic Chinese based on the following terms: {cur_term}\n
+            Below is a section with latex format from an English academic paper with title `{title}`, You should translate it into authentic Simplified Chinese based on the following terms: {cur_term}\n
             For special or rare professional terms, you should add the original English terms in parentheses after translation. \n
             {user_prompt}\n
             Please keep the accuracy of the output format with Latex.\n
-            Do not modify any latex command such as \section, \cite, \begin, \item and equations.
-            Answer me only with the translated text:\n\n
-            `{frag}`"""
+            Do not modify any latex command such as \section, \cite, \begin, \item or equations.
+            ===
+            Based on the above requests, and the latex section is below, answer me only with the translated text:\n\n
+            {frag}"""
             inputs_array.append(cur_input)
 
 
