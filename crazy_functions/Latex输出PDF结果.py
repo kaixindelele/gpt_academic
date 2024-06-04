@@ -101,6 +101,7 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
             {user_prompt}\n
             Please keep the accuracy of the output format with Latex.\n
             Do not modify any latex command such as \section, \cite, \begin, \item or equations.
+            不要翻译公式和表格里面的内容，保持LaTeX格式正确性。
             ===
             Based on the above requests, and the latex section is below, answer me only with the translated text:\n\n
             {frag}"""
