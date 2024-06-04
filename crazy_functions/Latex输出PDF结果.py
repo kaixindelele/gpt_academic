@@ -42,6 +42,10 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
     """
     n_split = len(pfg.sp_file_contents)
     print("more_requirement:", more_requirement)    
+    # 读取本地默认术语    
+    with open('all_terms.json', 'r') as file:
+        default_term_dict = json.load(file)
+
     if len(more_requirement) > 0:
         # 先消除no-cache的内容
         more_requirement = more_requirement.replace("--no-cache", "")
@@ -53,21 +57,17 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
         # if len(user_term_dict) > 0:
         #     if len(user_prompt.strip())==0:
         #         user_prompt = "基于上面的术语库，把对应的论文章节翻译成地道的中文表达，并且保持LaTeX格式的准确性"
-
-        # 读取本地默认术语    
-        with open('all_terms.json', 'r') as file:
-            default_term_dict = json.load(file)
-
+        
         # 访问数据
         print("default_term_dict:", default_term_dict)
 
         # 合并两个术语字典：
         default_term_dict.update(user_term_dict)
 
-        if len(more_requirement) > 0:
-            more_requirement = "More Requirement:" + more_requirement + "\n"
-    more_requirement += "\n For some special and rare professional terms, please add the original English term in parentheses after translation.\n"
-    print("last more_requirement:", more_requirement)
+    #     if len(more_requirement) > 0:
+    #         more_requirement = "More Requirement:" + more_requirement + "\n"
+    # more_requirement += "\n For some special and rare professional terms, please add the original English term in parentheses after translation.\n"
+    # print("last more_requirement:", more_requirement)
     if mode == 'proofread_en':
         inputs_array = [r"Below is a section from an academic paper, proofread this section." + 
                         r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + more_requirement +
