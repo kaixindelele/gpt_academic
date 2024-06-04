@@ -95,20 +95,60 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
                     cur_term.update({key:value})
             print("cur_term:", cur_term)
             cur_term = '`' + str(cur_term) + '`'
-            cur_input = f"""
-            Below is a section with latex format from an English academic paper with title `{title}`, You should translate it into authentic Simplified Chinese based on the following terms: {cur_term}\n
-            For special or rare professional terms, you should add the original English terms in parentheses after translation. \n
-            {user_prompt}\n
-            Please keep the accuracy of the output format with Latex.\n
-            Do not modify any latex command such as \section, \cite, \begin, \item or equations.
-            不要翻译公式和表格里面的内容，保持LaTeX格式正确性。
-            ===
-            Based on the above requests, and the latex section is below, answer me only with the translated text:\n\n
-            {frag}"""
+            # cur_input = f"""
+            # Below is a section with latex format from an English academic paper with title `{title}`.
+            # You should translate it into authentic Simplified Chinese based on the following terms: {cur_term}\n
+            # For special or rare professional terms, you should add the original English terms in parentheses after translation. \n
+            # {user_prompt}\n
+            # Please keep the accuracy of the output format with Latex.\n
+            # Do not modify any latex command such as \section, \cite, \begin, \item or equations.
+            # 不要翻译公式和表格里面的内容，保持LaTeX格式正确性。
+            # ===
+            # Based on the above requests, and the latex section is below, answer me only with the translated text:\n\n
+            # {frag}"""
+            if user_prompt:
+                cur_input = f""" Please translate the LaTeX format fragment of an English academic paper into authentic Simplified Chinese according to the following instructions. The title of the paper is {title}. 
+                === Here are some translation requirements: 
+                - In the translation, please refer to the following terminology dict: {cur_term}. 
+                - For special or rare professional terms, please add parentheses after the translation to indicate the original English term. 
+                - Please translate according to the specific requirements given by {user_prompt}. 
+                - Maintain the accuracy of the output LaTeX format and ensure that LaTeX commands (such as \section, \cite, \begin, \item, etc.) are not modified. 
+                - Do not translate the content within formulas and tables, and maintain the correctness of the LaTeX format. 
+                === 
+                The following is the LaTeX text fragment that needs to be translated: 
+                \n\n
+                ```
+                {frag}
+                ```
+                ===
+                Your output needed to be enclosed with triple backticks, as following:
+                ```
+                translated content
+                ```
+                """
+            else:
+                cur_input = f""" Please translate the LaTeX format fragment of an English academic paper into authentic Simplified Chinese according to the following instructions. The title of the paper is {title}. 
+                === Here are some translation requirements: 
+                - In the translation, please refer to the following terminology dict: {cur_term}. 
+                - For special or rare professional terms, please add parentheses after the translation to indicate the original English term. 
+                - Maintain the accuracy of the output LaTeX format and ensure that LaTeX commands (such as \section, \cite, \begin, \item, etc.) are not modified. 
+                - Do not translate the content within formulas and tables, and maintain the correctness of the LaTeX format. 
+                === 
+                The following is the LaTeX text fragment that needs to be translated: 
+                \n\n
+                ```
+                {frag}
+                ```
+                ===
+                Your output needed to be enclosed with triple backticks, as following:
+                ```
+                translated content
+                ```
+                
+                """
             inputs_array.append(cur_input)
 
-
-        sys_prompt_array = [f"You are a professional academic translator." for _ in range(n_split)]
+        sys_prompt_array = [f"You are a professional academic translator with Latex format." for _ in range(n_split)]
     else:
         assert False, "未知指令"
     return inputs_array, sys_prompt_array

@@ -303,6 +303,13 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     gpt_response_collection = []
     for inputs_show_user, f in zip(inputs_show_user_array, futures):
         gpt_res = f.result()
+        if 'You are a professional academic translator with Latex format.' == sys_prompt_array[0]:
+            gpt_res = gpt_res.strip()
+            if '```' in gpt_res[0:3]:
+                gpt_res = gpt_res[3:]
+            if '```' in gpt_res[-3:]:
+                gpt_res = gpt_res[:-3]
+            print("latex-gpt_res:", gpt_res)
         gpt_response_collection.extend([inputs_show_user, gpt_res])
     
     # 是否在结束时，在界面上显示结果
