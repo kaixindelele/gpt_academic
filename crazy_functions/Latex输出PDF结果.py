@@ -45,7 +45,7 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
     # 读取本地默认术语    
     with open('all_terms.json', 'r') as file:
         default_term_dict = json.load(file)
-
+    user_prompt = ""
     if len(more_requirement) > 0:
         # 先消除no-cache的内容
         more_requirement = more_requirement.replace("--no-cache", "")
