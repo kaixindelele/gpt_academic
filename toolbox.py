@@ -13,6 +13,8 @@ from latex2mathml.converter import convert as tex2mathml
 from functools import wraps, lru_cache
 pj = os.path.join
 default_user_name = 'default_user'
+from get_api_sql import DBManager
+db_manager = DBManager()
 """
 ========================================================================
 第一部分
@@ -731,6 +733,59 @@ def what_keys(keys):
 
     return f"检测到： OpenAI Key {avail_key_list['OpenAI Key']} 个, Azure Key {avail_key_list['Azure Key']} 个, API2D Key {avail_key_list['API2D Key']} 个"
 
+
+# 假设 db_manager 已经正确导入
+
+CACHE_FILE = 'sql.txt'
+CACHE_INTERVAL = 600  # 10分钟
+import json
+
+def get_db_data():
+    apikey, url = None, None
+    print("get_db_connection:", db_manager.server)
+    
+    for _ in range(3):        
+        apikey = db_manager.get_single_alive_key()
+        url = db_manager.get_single_alive_key_url(apikey)
+        if apikey and url:
+            print("get_db_data:", apikey, url)
+            break
+    return {'apikey': apikey, 'url': url}
+
+def read_cache():
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                data = json.load(f)
+            return data
+        except Exception as e:
+            print("read cache error:", e)            
+            return None
+    return None
+
+def write_cache(data):
+    with open(CACHE_FILE, 'w') as f:
+        json.dump(data, f)
+
+def get_data():
+    cache = read_cache()
+    current_time = time.time()
+
+    if cache and current_time - cache['timestamp'] < CACHE_INTERVAL:
+        print("Reading from cache", cache['data'])
+        return cache['data']['apikey'], cache['data']['url']
+    
+    print("Fetching from database")
+    data = get_db_data()
+    print("data:", data)
+    cache_data = {
+        'timestamp': current_time,
+        'data': data
+    }
+    if data['apikey'] and data['url']:
+        write_cache(cache_data)
+    return data['apikey'], data['url']
+
 def select_api_key(keys, llm_model):
     import random
     avail_key_list = []
@@ -801,6 +856,14 @@ def select_api_key(keys, llm_model):
     if len(avail_key_list) == 0:
         raise RuntimeError(f"您提供的api-key不满足要求，不包含任何可用于{llm_model}的api-key。您可能选择了错误的模型或请求源（右下角更换模型菜单中可切换openai,azure,claude,api2d等请求源）。")
     print("live_apis_num:", len(avail_key_list))
+
+    # 从mysql数据库中选一个：
+    apikey, url = get_data()
+    print("mysql_apikey:", apikey)
+    print("mysql_apikey url:", url)
+
+    avail_key_list = [apikey]
+    
     api_key = random.choice(avail_key_list) # 随机负载均衡
     print("current_selected_api_key:", api_key)
     return api_key

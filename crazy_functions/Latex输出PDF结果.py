@@ -91,7 +91,7 @@ def switch_prompt(pfg, mode, more_requirement='', title=''):
         for frag in pfg.sp_file_contents:
             cur_term = {}
             for key, value in default_term_dict.items():
-                if key in frag:
+                if key.lower() in frag.lower():
                     cur_term.update({key:value})
             print("cur_term:", cur_term)
             cur_term = '`' + str(cur_term) + '`'

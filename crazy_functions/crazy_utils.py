@@ -177,7 +177,12 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     输出 Returns:
         list: List of GPT model responses （每个子任务的输出汇总，如果某个子任务出错，response中会携带traceback报错信息，方便调试和定位问题。）
     """
-    import time, random
+    # 多进程之前，先单进程读取一次数据库的信息：
+    from toolbox import get_data
+    data = get_data()
+    print("before_get_data:", data)
+    
+    import time, random    
     from concurrent.futures import ThreadPoolExecutor
     from request_llm.bridge_all import predict_no_ui_long_connection
     assert len(inputs_array) == len(history_array)

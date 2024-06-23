@@ -156,3 +156,6 @@ vip_apis.txt
 cohere_vips.txt
 config_private.py
 doc_black_apis.txt
+sql.txt
+get_api_sql.py
+cohere_apis.txt

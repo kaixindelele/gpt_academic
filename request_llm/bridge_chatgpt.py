@@ -22,6 +22,8 @@ import random
 import pickle
 import jieba
 from flashtext import KeywordProcessor
+from get_api_sql import DBManager
+db_manager = DBManager()
 
 # config_private.py放自己的秘密如API和代理网址
 # 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
@@ -31,6 +33,13 @@ proxies, TIMEOUT_SECONDS, MAX_RETRY, API_ORG = \
 
 timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check proxy settings in config.py.' + \
                   '网络错误，检查代理服务器是否可用，以及代理设置的格式是否正确，格式须是[协议]://[地址]:[端口]，缺一不可。'
+
+CACHE_FILE = "sql.txt"
+def get_endpoint():
+    with open(CACHE_FILE, 'r') as f:
+        data = json.load(f)
+    endpoint = data['data']['url']
+    return endpoint
 
 def tokenize_text(text):
     seg_list = jieba.cut(text)
@@ -126,7 +135,10 @@ def check_sensitive(input, zz_sensitive_words, sq_sensitive_words, key, llm_kwar
         try:
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
-            endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            endpoint = get_endpoint()
+            endpoint = endpoint + "/v1/chat/completions"
+            print("endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
                                      json=payload, stream=True, timeout=TIMEOUT_SECONDS); break
         except requests.exceptions.ReadTimeout as e:
@@ -229,7 +241,10 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
         try:
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
-            endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']            
+            endpoint = get_endpoint()
+            endpoint = endpoint + "/v1/chat/completions"
+            print("last endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
                                     json=payload, stream=True, timeout=TIMEOUT_SECONDS); break
         except requests.exceptions.ReadTimeout as e:
@@ -339,7 +354,10 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         try:
             # make a POST request to the API endpoint, stream=True
             from .bridge_all import model_info
-            endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            endpoint = get_endpoint()
+            endpoint = endpoint + "/v1/chat/completions"
+            print("endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
                                     json=payload, stream=True, timeout=TIMEOUT_SECONDS);break
         except:
