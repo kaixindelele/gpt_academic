@@ -12,21 +12,21 @@ def main():
                 return False
             except socket.error:
                 return True
-    if is_port_in_use(port=1237):
-        os.environ['WEB_PORT'] = '8887'
-        from toolbox import get_db_data, write_cache
-        import time
-        data = get_db_data()
-        print("data:", data)
-        current_time = time.time()
-        cache_data = {
-            'timestamp': current_time,
-            'data': data
-        }
-        if data['apikey'] and data['url']:
-            write_cache(cache_data)
-    else:
-        os.environ['WEB_PORT'] = '1237'
+    # if is_port_in_use(port=1237):
+    #     os.environ['WEB_PORT'] = '8887'
+    #     from toolbox import get_db_data, write_cache
+    #     import time
+    #     data = get_db_data()
+    #     print("data:", data)
+    #     current_time = time.time()
+    #     cache_data = {
+    #         'timestamp': current_time,
+    #         'data': data
+    #     }
+    #     if data['apikey'] and data['url']:
+    #         write_cache(cache_data)
+    # else:
+    #     os.environ['WEB_PORT'] = '1237'
     import gradio as gr
     if gr.__version__ not in ['3.32.6']: 
         raise ModuleNotFoundError("使用项目内置Gradio获取最优体验! 请运行 `pip install -r requirements.txt` 指令安装内置Gradio及其他依赖, 详情信息见requirements.txt.")
