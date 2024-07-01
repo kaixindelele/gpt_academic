@@ -21,6 +21,9 @@ from .bridge_qwen_vllm import predict_no_ui_long_connection as qwen_vllm_noui
 from .bridge_chatglm import predict_no_ui_long_connection as chatglm_noui
 from .bridge_chatglm import predict as chatglm_ui
 
+from .bridge_zhipu import predict_no_ui_long_connection as zhipu_noui
+from .bridge_zhipu import predict as zhipu_ui
+
 from .bridge_chatglm import predict_no_ui_long_connection as chatglm_noui
 from .bridge_chatglm import predict as chatglm_ui
 
@@ -171,7 +174,33 @@ model_info = {
         "token_cnt": get_token_num_gpt35,
     },
 
+    "glm-4-air": {
+        "fn_with_ui": zhipu_ui,
+        "fn_without_ui": zhipu_noui,
+        "endpoint": None,
+        "max_token": 1024 * 4,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+
 }
+
+
+# -=-=-=-=-=-=- 智谱 -=-=-=-=-=-=-
+if "zhipuai" in AVAIL_LLM_MODELS:   # zhipuai 是glm-4的别名，向后兼容配置
+    try:
+        model_info.update({
+            "zhipuai": {
+                "fn_with_ui": zhipu_ui,
+                "fn_without_ui": zhipu_noui,
+                "endpoint": None,
+                "max_token": 10124 * 8,
+                "tokenizer": tokenizer_gpt35,
+                "token_cnt": get_token_num_gpt35,
+            },
+        })
+    except:
+        print(trimmed_format_exc())
 
 # -=-=-=-=-=-=- 以下部分是新加入的模型，可能附带额外依赖 -=-=-=-=-=-=-
 if "claude-1-100k" in AVAIL_LLM_MODELS or "claude-2" in AVAIL_LLM_MODELS:

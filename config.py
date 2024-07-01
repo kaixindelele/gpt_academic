@@ -82,9 +82,9 @@ DEFAULT_FN_GROUPS = ['学术']
 
 
 # 模型选择是 (注意: LLM_MODEL是默认选中的模型, 它*必须*被包含在AVAIL_LLM_MODELS列表中 )
-LLM_MODEL = "gpt-3.5-turbo" # 可选 ↓↓↓
-LLM_MODEL = "Qwen1.5-14B-Chat-GPTQ-Int4" # 可选 ↓↓↓
-AVAIL_LLM_MODELS = ["command-r-plus",
+# LLM_MODEL = "gpt-3.5-turbo" # 可选 ↓↓↓
+# LLM_MODEL = "glm-4-air" # 可选 ↓↓↓
+AVAIL_LLM_MODELS = ["command-r-plus", "glm-4-air",
                     "gpt-3.5-turbo", 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo-0613',                     
                     "gpt-3.5-turbo-1106", "gpt-3.5-turbo-0125", "gpt-3.5-turbo-16k", 
                     "gpt-3.5-turbo-16k-0613", 

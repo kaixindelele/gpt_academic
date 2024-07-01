@@ -1313,3 +1313,69 @@ def log_chat(llm_model: str, input_str: str, output_str: str):
             logging.info(f"[Response({uid})]\n{output_str}\n\n")
     except:
         print(trimmed_format_exc())
+
+
+import base64
+
+# Function to encode the image
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+    
+
+def get_pictures_list(path):
+    file_manifest = [f for f in glob.glob(f"{path}/**/*.jpg", recursive=True)]
+    file_manifest += [f for f in glob.glob(f"{path}/**/*.jpeg", recursive=True)]
+    file_manifest += [f for f in glob.glob(f"{path}/**/*.png", recursive=True)]
+    return file_manifest
+
+def have_any_recent_upload_image_files(chatbot:ChatBotWithCookies, pop:bool=False):
+    _5min = 5 * 60
+    if chatbot is None:
+        return False, None  # chatbot is None
+    if pop:
+        most_recent_uploaded = chatbot._cookies.pop("most_recent_uploaded", None)
+    else:
+        most_recent_uploaded = chatbot._cookies.get("most_recent_uploaded", None)
+    # most_recent_uploaded 是一个放置最新上传图像的路径
+    if not most_recent_uploaded:
+        return False, None  # most_recent_uploaded is None
+    if time.time() - most_recent_uploaded["time"] < _5min:
+        path = most_recent_uploaded["path"]
+        file_manifest = get_pictures_list(path)
+        if len(file_manifest) == 0:
+            return False, None
+        return True, file_manifest  # most_recent_uploaded is new
+    else:
+        return False, None  # most_recent_uploaded is too old
+
+# Claude3 model supports graphic context dialogue, reads all images
+def every_image_file_in_path(chatbot:ChatBotWithCookies):
+    if chatbot is None:
+        return False, []  # chatbot is None
+    most_recent_uploaded = chatbot._cookies.get("most_recent_uploaded", None)
+    if not most_recent_uploaded:
+        return False, []  # most_recent_uploaded is None
+    path = most_recent_uploaded["path"]
+    file_manifest = get_pictures_list(path)
+    if len(file_manifest) == 0:
+        return False, []
+    return True, file_manifest
+
+
+
+def check_packages(packages=[]):
+    import importlib.util
+
+    for p in packages:
+        spam_spec = importlib.util.find_spec(p)
+        if spam_spec is None:
+            raise ModuleNotFoundError
+        
+
+def report_exception(chatbot:ChatBotWithCookies, history:list, a:str, b:str):
+    """
+    向chatbot中添加错误信息
+    """
+    chatbot.append((a, b))
+    history.extend([a, b])
