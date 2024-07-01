@@ -1,5 +1,6 @@
 import glob, shutil, os, re, logging
-from toolbox import update_ui, trimmed_format_exc, gen_time_str
+import json
+from toolbox import update_ui, trimmed_format_exc, gen_time_str, disable_auto_promotion
 from toolbox import CatchException, report_exception, get_log_folder
 from toolbox import write_history_to_file, promote_file_to_downloadzone
 fast_debug = False
@@ -50,6 +51,27 @@ class PaperFileGroup():
                 f.write(res)
         return manifest
 
+def extract_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')
+        term_dict = eval(dict_str)
+        return term_dict
+    else:
+        return {}
+
+def extract_exclude_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')
+        return term_str.replace(dict_str, '')
+    else:
+        return term_str
+
 def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, language='en'):
     from .crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 
@@ -67,12 +89,84 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
     pfg.run_file_split(max_token_limit=2048)
     n_split = len(pfg.sp_file_contents)
 
+    more_req = plugin_kwargs.get("advanced_arg", "")
+    # 提取术语的字典和剩余指令
+    user_term_dict = extract_dict_from_string(more_req)
+    user_prompt = extract_exclude_dict_from_string(more_req)
+    # 如果有术语，但没有提示词，则默认给一个提示词：
+    if len(user_term_dict) > 0:
+        if len(user_prompt.strip())==0:
+            user_prompt = "基于上面的术语库，把对应的论文章节翻译成地道的中文表达，并且保持格式的准确性"
+
+    # 读取本地默认术语
+    with open('all_terms.json', 'r') as file:
+        default_term_dict = json.load(file)
+
+    # 访问数据
+    print("default_term_dict:", default_term_dict)
+
+    # 合并两个术语字典：
+    default_term_dict.update(user_term_dict)
+
+    print("more_req:", more_req)
+    if len(more_req) == "":
+        more_req = ''
+    else:
+        if '```' not in more_req:
+            more_req = f"```{more_req}```"
+
     #  <-------- 多线程翻译开始 ---------->
     if language == 'en->zh':
-        inputs_array = ["This is a Markdown file, translate it into Chinese, do NOT modify any existing Markdown commands, do NOT use code wrapper (```), ONLY answer me with translated results:" +
-                        f"\n\n{frag}" for frag in pfg.sp_file_contents]
-        inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
-        sys_prompt_array = ["You are a professional academic paper translator." + plugin_kwargs.get("additional_prompt", "") for _ in range(n_split)]
+        if len(more_req) == 0:
+            inputs_array = ["This is a Markdown file, translate it into Chinese, do NOT modify any existing Markdown commands" +
+                            f"\n\n{frag}" for frag in pfg.sp_file_contents]
+            inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
+            sys_prompt_array = ["You are a professional academic paper translator."  + plugin_kwargs.get("additional_prompt", "") for _ in range(n_split) for _ in range(n_split)]
+        else:
+            # inputs_array = ["This is a Markdown file, translate it into Chinese, do NOT modify any existing Markdown commands, do NOT use code wrapper (```), and you should follow this requirement:" + str(more_req) + "\n The text is " +
+            #                 f"\n\n{frag}" for frag in pfg.sp_file_contents]
+            inputs_array = [f"""
+            This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {more_req}.\n
+                            Some requests for translation are as follows:
+                            - Please keep these terms accurate when translating.
+                            - Please keep the chapter title text accurate and clear.
+                            - Please keep the accuracy of the output format in Markdown format.
+                            \n
+                            Your output format is
+                            ```markdown
+                            translated text.
+                            ```
+                            The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n
+                            """ for frag in pfg.sp_file_contents]
+
+            # 这里的列表就得详细的循环：
+            inputs_array = []
+            for frag in pfg.sp_file_contents:
+                cur_term = {}
+                for key, value in default_term_dict.items():
+                    if key.lower() in frag.lower():
+                        cur_term.update({key:value})
+                print("cur_term:", cur_term)
+                cur_term = '```' + str(cur_term) + '```'
+                cur_input = f"""
+                This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {cur_term}\n
+
+                {user_prompt}.\n
+                                Some requests for translation are as follows:
+                                - Please keep these terms accurate when translating.
+                                - Please keep the chapter title text accurate and clear.
+                                - Please keep the accuracy of the output format in Markdown format.
+                                \n
+                                Your output format is
+                                ```markdown
+                                translated text.
+                                ```
+                                The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n
+                                """
+                inputs_array.append(cur_input)
+
+            inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
+            sys_prompt_array = ["You are a professional academic paper translator."  + plugin_kwargs.get("additional_prompt", "") for _ in range(n_split) for _ in range(n_split)]
     elif language == 'zh->en':
         inputs_array = [f"This is a Markdown file, translate it into English, do NOT modify any existing Markdown commands, do NOT use code wrapper (```), ONLY answer me with translated results:" +
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
@@ -97,8 +191,10 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
     try:
         pfg.sp_file_result = []
         for i_say, gpt_say in zip(gpt_response_collection[0::2], gpt_response_collection[1::2]):
+            # gpt_say = gpt_say.strip().replace("```markdown", "").replace("```", "")
             pfg.sp_file_result.append(gpt_say)
         pfg.merge_result()
+        # pfg.write_result(language)
         output_file_arr = pfg.write_result(language)
         for output_file in output_file_arr:
             promote_file_to_downloadzone(output_file, chatbot=chatbot)
@@ -191,9 +287,6 @@ def Markdown英译中(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_p
         return
 
     yield from 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, language='en->zh')
-
-
-
 
 
 @CatchException
