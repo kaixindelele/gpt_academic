@@ -157,3 +157,4 @@ themes/common.js.min.*.js
 test.html
 objdump*
 get_api_sql.py
+sql.txt

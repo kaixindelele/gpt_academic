@@ -1035,3 +1035,56 @@ def log_chat(llm_model: str, input_str: str, output_str: str):
             logging.info(f"[Response({uid})]\n{output_str}\n\n")
     except:
         print(trimmed_format_exc())
+
+
+CACHE_FILE = 'sql.txt'
+CACHE_INTERVAL = 600  # 10分钟
+import json
+from get_api_sql import DBManager
+db_manager = DBManager()
+
+def get_db_data():
+    apikey, url = None, None
+    print("get_db_connection:", db_manager.server)
+
+    for _ in range(3):
+        apikey = db_manager.get_single_alive_key()
+        url = db_manager.get_single_alive_key_url(apikey)
+        if apikey and url:
+            print("get_db_data:", apikey, url)
+            break
+    return {'apikey': apikey, 'url': url}
+
+def read_cache():
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                data = json.load(f)
+            return data
+        except Exception as e:
+            print("read cache error:", e)
+            return None
+    return None
+
+def write_cache(data):
+    with open(CACHE_FILE, 'w') as f:
+        json.dump(data, f)
+
+def get_data():
+    cache = read_cache()
+    current_time = time.time()
+
+    if cache and current_time - cache['timestamp'] < CACHE_INTERVAL:
+        print("Reading from cache", cache['data'])
+        return cache['data']['apikey'], cache['data']['url']
+
+    print("Fetching from database")
+    data = get_db_data()
+    print("data:", data)
+    cache_data = {
+        'timestamp': current_time,
+        'data': data
+    }
+    if data['apikey'] and data['url']:
+        write_cache(cache_data)
+    return data['apikey'], data['url']

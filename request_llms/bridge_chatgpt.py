@@ -16,6 +16,11 @@ import logging
 import traceback
 import requests
 import random
+import pickle
+import jieba
+from flashtext import KeywordProcessor
+from get_api_sql import DBManager
+db_manager = DBManager()
 
 # config_private.py放自己的秘密如API和代理网址
 # 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
@@ -27,6 +32,165 @@ proxies, TIMEOUT_SECONDS, MAX_RETRY, API_ORG, AZURE_CFG_ARRAY = \
 
 timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check proxy settings in config.py.' + \
                   '网络错误，检查代理服务器是否可用，以及代理设置的格式是否正确，格式须是[协议]://[地址]:[端口]，缺一不可。'
+
+CACHE_FILE = "sql.txt"
+def get_endpoint():
+    with open(CACHE_FILE, 'r') as f:
+        data = json.load(f)
+    endpoint = data['data']['url']
+    return endpoint
+
+def tokenize_text(text):
+    seg_list = jieba.cut(text)
+    return ' '.join(seg_list)
+
+def contains_sensitive_words(tokenized_text, sensitive_words_list):
+    keyword_processor = KeywordProcessor()
+    keyword_processor.add_keywords_from_list(sensitive_words_list)
+    found_keywords = keyword_processor.extract_keywords(tokenized_text)
+    return len(found_keywords) > 0, found_keywords
+
+def check_sensitive(input, zz_sensitive_words, sq_sensitive_words, key, llm_kwargs):
+    # openai.api_key = key
+    messages = [
+        {"role": "system",
+            "content": """你是一个中国人，积极维护中国人民的利益和中国人民政府以及中国共产党。
+            在为用户提供学术服务之前，面对各种各样的输入时，你暂时充当一个敏感词检测员，你需要判断用户的输入问题是否涉及到政治，或者色情等不好的信息."""},
+        {"role": "assistant",
+            "content": """现在对于一个学术版的GPT网站，面对各种奇怪的用户输入，你需要先判定出用户的输入是否是纯学术上的讨论，不涉及政治和色情等敏感话题。
+            请帮忙自动判断用户的输入是否涉及到政治和色情等敏感话题。"""},
+        {"role": "user",
+         "content": f"""用户的输入文本内容：{input}
+         现在对于一个学术版的GPT网站，面对各种奇怪的用户输入，你需要先判定出用户的输入是否是纯学术上的讨论，不涉及政治和色情等敏感话题。
+         请帮忙自动判断用户的输入是否涉及到政治和色情等敏感话题:
+         输出格式如下：
+         如果输入和输出都涉及这两个敏感话题，尤其是涉及到挑衅中国国家利益，损害中国人民权益，玷污中国人民政府和共产党、妄议中国国家领导人等问题，请输出：
+         ["reject"]
+         如果输入和输出不涉及这两个敏感话题，只涉及到一些学术问题，请输出：
+         ["pass"]
+         提供部分敏感词库：
+         政治敏感词库：{zz_sensitive_words}
+         色情敏感词库：{sq_sensitive_words}
+         提供部分输出样例：
+         demo1：
+         "input": "我现在完全不想学习，想睡觉，想干有意思的事"
+         输出：["pass"]
+
+         demo2：
+         "input": "如何做爱？"
+         输出：["reject"]
+
+         demo3：
+         "input": "台湾"
+         输出：["reject"]
+
+         demo4：
+         "input": "如何部署一个网站"
+         输出：["pass"]
+
+         demo5：
+         "input": "中国政府今年带领中国人民取得出口贸易额成功突破35%的增长大关"
+         输出：["pass"]
+
+         demo5：
+         "input": "新疆棉花"
+         输出：["reject"]
+
+         demo6：
+         "input": "李克强"
+         输出：["reject"]
+
+         demo7：
+         "input": "武汉新冠肺炎"
+         输出：["reject"]
+
+         请记住其他一切可能导致不利于中国国家利益、损害中国人民权益（尤其是未成年人权益的），玷污中国人民政府和共产党的输出，都需要reject！
+         保留对学术问题的pass,对美好生活和日常工作和技术内容的pass.
+         最后，请记住，你只是做一个简单的填空题，输出只是根据上下文，选择["reject"] 或者 ["pass"]，不能包含任何其他文本信息。
+
+         """
+        }   ,
+    ]
+
+    watch_dog_patience = 15 # 看门狗的耐心, 设置5秒即可
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {key}"
+    }
+    payload = {
+        "model": llm_kwargs['llm_model'].strip('api2d-'),
+        "messages": messages,
+        "temperature": 0.0,  # 1.0,
+        "top_p": 0.05,  # 1.0,
+        "n": 1,
+        "stream": True,
+        "presence_penalty": 0,
+        "frequency_penalty": 0,
+    }
+    retry = 0
+    observe_window=None
+    console_slience=False
+    while True:
+        try:
+            # make a POST request to the API endpoint, stream=False
+            from .bridge_all import model_info
+            # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            endpoint = get_endpoint()
+            endpoint = endpoint + "/v1/chat/completions"
+            print("endpoint:", endpoint)
+            response = requests.post(endpoint, headers=headers, proxies=proxies,
+                                     json=payload, stream=True, timeout=TIMEOUT_SECONDS); break
+        except requests.exceptions.ReadTimeout as e:
+            retry += 1
+            traceback.print_exc()
+            if retry > MAX_RETRY: raise TimeoutError
+            if MAX_RETRY!=0: print(f'请求超时，正在重试 ({retry}/{MAX_RETRY}) ……')
+
+    stream_response =  response.iter_lines()
+    result = ''
+    while True:
+        try: chunk = next(stream_response).decode()
+        except StopIteration:
+            break
+        except requests.exceptions.ConnectionError:
+            chunk = next(stream_response).decode() # 失败了，重试一次？再失败就没办法了。
+        if len(chunk)==0: continue
+        if not chunk.startswith('data:'):
+            error_msg = get_full_error(chunk.encode('utf8'), stream_response).decode()
+            if "reduce the length" in error_msg:
+                raise ConnectionAbortedError("OpenAI拒绝了请求:" + error_msg)
+            else:
+                raise RuntimeError("OpenAI拒绝了请求：" + error_msg)
+        if ('data: [DONE]' in chunk): break # api2d 正常完成
+        json_data = json.loads(chunk.lstrip('data:'))['choices'][0]
+        delta = json_data["delta"]
+        if len(delta) == 0: break
+        if "role" in delta: continue
+        if "content" in delta:
+            result += delta["content"]
+            if not console_slience: print(delta["content"], end='')
+            if observe_window is not None:
+                # 观测窗，把已经获取的数据显示出去
+                if len(observe_window) >= 1: observe_window[0] += delta["content"]
+                # 看门狗，如果超过期限没有喂狗，则终止
+                if len(observe_window) >= 2:
+                    if (time.time()-observe_window[1]) > watch_dog_patience:
+                        raise RuntimeError("用户取消了程序。")
+        else: raise RuntimeError("意外Json结构："+delta)
+    if json_data['finish_reason'] == 'length':
+        raise ConnectionAbortedError("正常结束，但显示Token不足，导致输出不完整，请削减单次输入的文本量。")
+    info = {}
+    print("sensitive_chat_result:", result)
+    # info['result'] = result
+    # info['token_used'] = response.usage.total_tokens
+    # 判断输出的结果是否包含pass
+    if "reject" in result:
+        info['pass'] = False
+    elif "pass" in result:
+        info['pass'] = True
+    else:
+        info['pass'] = False
+    return info
 
 def get_full_error(chunk, stream_response):
     """
@@ -140,7 +304,10 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
         try:
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
-            endpoint = verify_endpoint(model_info[llm_kwargs['llm_model']]['endpoint'])
+            # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            endpoint = get_endpoint()
+            endpoint = endpoint + "/v1/chat/completions"
+            print("last endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
                                     json=payload, stream=True, timeout=TIMEOUT_SECONDS); break
         except requests.exceptions.ReadTimeout as e:
@@ -250,14 +417,6 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
         yield from update_ui(chatbot=chatbot, history=history, msg="api-key不满足要求") # 刷新界面
         return
 
-    # 检查endpoint是否合法
-    try:
-        endpoint = verify_endpoint(model_info[llm_kwargs['llm_model']]['endpoint'])
-    except:
-        tb_str = '```\n' + trimmed_format_exc() + '```'
-        chatbot[-1] = (inputs, tb_str)
-        yield from update_ui(chatbot=chatbot, history=history, msg="Endpoint不满足要求") # 刷新界面
-        return
 
     # 加入历史
     if has_recent_image_upload:
@@ -269,6 +428,11 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
     while True:
         try:
             # make a POST request to the API endpoint, stream=True
+            from .bridge_all import model_info
+            # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
+            endpoint = get_endpoint()
+            endpoint = endpoint + "/v1/chat/completions"
+            print("endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
                                     json=payload, stream=True, timeout=TIMEOUT_SECONDS);break
         except:
@@ -290,6 +454,17 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
                 # 非OpenAI官方接口的出现这样的报错，OpenAI和API2D不会走这里
                 chunk_decoded = chunk.decode()
                 error_msg = chunk_decoded
+                # 进入黑名单检测环节：
+                current_api_key = headers['Authorization'].split(' ')[-1]
+                print("current_api_key:", current_api_key)
+                add_black_list(error_msg, current_api_key)
+                # 这时候需要重新采样一个api_key
+                new_api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {new_api_key}"
+                }
+
                 # 首先排除一个one-api没有done数据包的第三方Bug情形
                 if len(gpt_replying_buffer.strip()) > 0 and len(error_msg) == 0:
                     yield from update_ui(chatbot=chatbot, history=history, msg="检测到有缺陷的非OpenAI官方接口，建议选择更稳定的接口。")
@@ -342,10 +517,39 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
                     chunk = get_full_error(chunk, stream_response)
                     chunk_decoded = chunk.decode()
                     error_msg = chunk_decoded
+                    # 进入黑名单检测环节：
+                    current_api_key = headers['Authorization'].split(' ')[-1]
+                    print("current_api_key:", current_api_key)
+                    add_black_list(error_msg, current_api_key)
+                    # 这时候需要重新采样一个api_key
+                    new_api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+                    headers = {
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {new_api_key}"
+                    }
                     chatbot, history = handle_error(inputs, llm_kwargs, chatbot, history, chunk_decoded, error_msg)
                     yield from update_ui(chatbot=chatbot, history=history, msg="Json异常" + error_msg) # 刷新界面
                     print(error_msg)
                     return
+
+def add_black_list(result, api_key):
+    print("result:", result)
+    result = str(result)
+    if "please check your plan" in result or "deactivated" in result or "account associated" in result or "Incorrect API key" in result:
+        # 先读取现有的黑名单，如果没有则加进去：
+        cur_black_list = []
+        try:
+            with open('black_apis.txt', 'r') as f:
+                for line in f.readlines():
+                    cur_black_list.append(line.strip())
+        except FileNotFoundError:
+            with open('black_apis.txt', 'w') as f:
+                f.write("")
+
+        if api_key not in cur_black_list:
+            print("add black list:", api_key)
+            with open('black_apis.txt', 'a+') as f:
+                f.write(api_key + '\n')
 
 def handle_error(inputs, llm_kwargs, chatbot, history, chunk_decoded, error_msg):
     from .bridge_all import model_info
@@ -388,7 +592,51 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
         api_key = 'no-api-key'
     else:
         api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+    # 先判断是否是敏感词：
+    # 加载敏感词库：
+    # 从 PKL 文件中读取并恢复 content 对象
+    with open('sensitive_words.pkl', 'rb') as f:
+        sensitive_words = pickle.load(f)
+    with open('zz_sensitive_words.pkl', 'rb') as f:
+        zz_sensitive_words = pickle.load(f)
+    with open('sq_sensitive_words.pkl', 'rb') as f:
+        sq_sensitive_words = pickle.load(f)
+    tokenized_text = tokenize_text(inputs)
 
+    # 根据system_prompt判断，如果是对话形式的，则需要判断
+    if "Serve me as a writing and programming assistant." in system_prompt:
+        result, found_keywords = contains_sensitive_words(tokenized_text, sensitive_words)
+
+        if result:
+            print("包含敏感词：", found_keywords)
+            print("奇怪的分词：", tokenized_text)
+            # openai.proxy = proxies['https']
+            check_result = check_sensitive(inputs, zz_sensitive_words, sq_sensitive_words, key=api_key, llm_kwargs=llm_kwargs)['pass']
+            add_black_list(check_result, api_key)
+            if bool(check_result):
+                pass_flag = True
+            else:
+                pass_flag = False
+        else:
+            pass_flag = True
+
+        # 如果是敏感词，直接返回预设的回复
+        if pass_flag == False:
+            from toolbox import black_list              # reject 并拉黑IP
+            from toolbox import black_num_list          # reject 的次数
+            if llm_kwargs['client_ip'] not in black_list:
+                black_num_list.append(1)
+            else:
+                now_ip_index = black_list.index(llm_kwargs['client_ip'])
+                black_num_list[now_ip_index] += 1
+            if llm_kwargs['client_ip'] not in black_list:
+                black_list.append(llm_kwargs['client_ip'])  # reject 并拉黑IP
+
+            max_reject_num = 3
+            now_ip_index = black_list.index(llm_kwargs['client_ip'])
+            raise AssertionError("禁止输入敏感词汇，若再次尝试您的IP将被本站永久封禁！另外请不要因为好奇，测试这个系统的漏洞！如果有人故意攻击，我们后面会关闭这个功能，只保留arxiv论文翻译。请大家共同珍惜这个免费的学术工具，对于文科的一些敏感词，我们已经努力做了二次检测了，如果还有误杀的，请多包涵。还有{}次机会！".format(max_reject_num-black_num_list[now_ip_index]))
+
+    # 如果不是敏感词，正常输出：
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -500,6 +748,6 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
         print(f" {llm_kwargs['llm_model']} : {conversation_cnt} : {inputs[:100]} ..........")
     except:
         print('输入中可能存在乱码。')
-    return headers,payload
+    return headers, payload
 
 

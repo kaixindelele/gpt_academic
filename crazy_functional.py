@@ -220,6 +220,7 @@ def get_crazy_functions():
                     "例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: " +
                     'If the term "agent" is used in this section, it should be translated to "智能体". ',
                 "Info": "Arxiv论文精细翻译 | 输入参数arxiv论文的ID，比如1812.10695",
+                "Class": Arxiv_Localize,    # 新一代插件需要注册Class
                 "Function": HotReload(Latex翻译中文并重新编译PDF)
             }
         })
@@ -234,6 +235,7 @@ def get_crazy_functions():
                     "例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: " +
                     'If the term "agent" is used in this section, it should be translated to "智能体". ',
                 "Info": "本地Latex论文精细翻译 | 输入参数是路径",
+                "Class": Arxiv_Localize,    # 新一代插件需要注册Class
                 "Function": HotReload(Latex翻译中文并重新编译PDF)
             }
         })
