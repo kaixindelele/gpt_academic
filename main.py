@@ -2,6 +2,7 @@ import os; os.environ['no_proxy'] = '*' # 避免代理网络产生意外污染
 import pickle
 import codecs
 import base64
+import json
 
 def enable_log(PATH_LOGGING):
     import logging
