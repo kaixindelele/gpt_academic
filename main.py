@@ -1,4 +1,18 @@
-import os, json; os.environ['no_proxy'] = '*' # 避免代理网络产生意外污染
+import os; os.environ['no_proxy'] = '*' # 避免代理网络产生意外污染
+import pickle
+import codecs
+import base64
+
+def enable_log(PATH_LOGGING):
+    import logging
+    admin_log_path = os.path.join(PATH_LOGGING, "admin")
+    os.makedirs(admin_log_path, exist_ok=True)
+    log_dir = os.path.join(admin_log_path, "chat_secrets.log")
+    try:logging.basicConfig(filename=log_dir, level=logging.INFO, encoding="utf-8", format="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    except:logging.basicConfig(filename=log_dir, level=logging.INFO,  format="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    # Disable logging output from the 'httpx' logger
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    print(f"所有对话记录将自动保存在本地目录{log_dir}, 请注意自我隐私保护哦！")
 
 help_menu_description = \
 """Github源代码开源和更新[地址🚀](https://github.com/binary-husky/gpt_academic),
@@ -13,26 +27,17 @@ help_menu_description = \
 </br></br>如何语音对话: 请阅读Wiki
 </br></br>如何临时更换API_KEY: 在输入区输入临时API_KEY后提交（网页刷新后失效）"""
 
-def enable_log(PATH_LOGGING):
-    import logging
-    admin_log_path = os.path.join(PATH_LOGGING, "admin")
-    os.makedirs(admin_log_path, exist_ok=True)
-    log_dir = os.path.join(admin_log_path, "chat_secrets.log")
-    try:logging.basicConfig(filename=log_dir, level=logging.INFO, encoding="utf-8", format="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-    except:logging.basicConfig(filename=log_dir, level=logging.INFO,  format="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-    # Disable logging output from the 'httpx' logger
-    logging.getLogger("httpx").setLevel(logging.WARNING)
-    print(f"所有对话记录将自动保存在本地目录{log_dir}, 请注意自我隐私保护哦！")
-
 def main():
     import gradio as gr
     if gr.__version__ not in ['3.32.9', '3.32.10', '3.32.11']:
         raise ModuleNotFoundError("使用项目内置Gradio获取最优体验! 请运行 `pip install -r requirements.txt` 指令安装内置Gradio及其他依赖, 详情信息见requirements.txt.")
     from request_llms.bridge_all import predict
-    from toolbox import format_io, find_free_port, on_file_uploaded, on_report_generated, get_conf, ArgsGeneralWrapper, DummyWith
-    # 建议您复制一个config_private.py放自己的秘密, 如API和代理网址
+    from toolbox import format_io, find_free_port, on_file_uploaded, on_report_generated, get_conf, ArgsGeneralWrapper, load_chat_cookies, DummyWith
+    # 建议您复制一个config_private.py放自己的秘密, 如API和代理网址, 避免不小心传github被别人看到
     proxies, WEB_PORT, LLM_MODEL, CONCURRENT_COUNT, AUTHENTICATION = get_conf('proxies', 'WEB_PORT', 'LLM_MODEL', 'CONCURRENT_COUNT', 'AUTHENTICATION')
     CHATBOT_HEIGHT, LAYOUT, AVAIL_LLM_MODELS, AUTO_CLEAR_TXT = get_conf('CHATBOT_HEIGHT', 'LAYOUT', 'AVAIL_LLM_MODELS', 'AUTO_CLEAR_TXT')
+    ENABLE_AUDIO, AUTO_CLEAR_TXT, PATH_LOGGING, AVAIL_THEMES, THEME = get_conf('ENABLE_AUDIO', 'AUTO_CLEAR_TXT', 'PATH_LOGGING', 'AVAIL_THEMES', 'THEME')
+    DARK_MODE, NUM_CUSTOM_BASIC_BTN, SSL_KEYFILE, SSL_CERTFILE = get_conf('DARK_MODE', 'NUM_CUSTOM_BASIC_BTN', 'SSL_KEYFILE', 'SSL_CERTFILE')
     ENABLE_AUDIO, AUTO_CLEAR_TXT, PATH_LOGGING, AVAIL_THEMES, THEME, ADD_WAIFU = get_conf('ENABLE_AUDIO', 'AUTO_CLEAR_TXT', 'PATH_LOGGING', 'AVAIL_THEMES', 'THEME', 'ADD_WAIFU')
     NUM_CUSTOM_BASIC_BTN, SSL_KEYFILE, SSL_CERTFILE = get_conf('NUM_CUSTOM_BASIC_BTN', 'SSL_KEYFILE', 'SSL_CERTFILE')
     DARK_MODE, INIT_SYS_PROMPT, ADD_WAIFU, TTS_TYPE = get_conf('DARK_MODE', 'INIT_SYS_PROMPT', 'ADD_WAIFU', 'TTS_TYPE')
@@ -48,6 +53,100 @@ def main():
 
     # 对话、日志记录
     enable_log(PATH_LOGGING)
+
+    initial_prompt = "Serve me as a writing and programming assistant."
+    title_html = """<!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                .container {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: start;
+                    margin: auto;
+                    max-width: 1200px;
+                    padding: 20px;
+                }
+                .content {
+                    flex: 1;
+                }
+                .image {
+                    flex: 0 0 120px;
+                    margin-left: 20px;
+                }
+                .title {
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-bottom: 20px;
+                }
+                .subtitle {
+                    text-align: center;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+                @media (max-width: 768px) {
+                    .container {
+                        flex-direction: column;
+                    }
+                    .image {
+                        margin-left: 0;
+                        margin-bottom: 20px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <h1 class="title">学术版GPT 网页非盈利版</h1>
+            <div class="container">
+                <div class="content">
+                    <div class="column">
+                        <ol start="1" style="text-align: left; line-height: 1.5;">
+                            <li>我和<a href="https://github.com/binary-husky/gpt_academic">学术版GPT</a>作者qingxu，希望能提供一个学术工具，请大家不要滥用，更不要用于违法犯罪；</li>
+                            <li>请注意数据隐私保护，不要上传<b>涉密和重要的个人数据</b>；</li>
+                            <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
+                            <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
+                            <li> 0506 另外安利一个强大的PDF文档解析+公式识别工具：<a href='https://simpletex.cn/ai/latex_ocr'>simpletex</a></li>
+                            <li>🎉 <b>0623. 本地部署的Qwen14B将更新为2.0，可以适用英-中翻译。</b></i>
+                            <li>🎉 0623 如果3.5无法使用时，大家可以试试免费版的command模型，对话智力还行。</li>
+
+                            <li>🎉 <b>0623 翻译已经支持术语库，在右下角高级参数输入区填入，格式为字典，推荐输入一个大的术语库，注意英文引号，格式如下：```{"agent": "智能体", "transformer": "transformer"}```</b></li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="column">
+                        <ol start="9" style="text-align: left; line-height: 1.5;">
+                            <li><b>教程1 | Arxiv论文翻译</b>: 1. 输入栏 https://arxiv.org/abs/23xx.yyyyy 2.点'Arixv论文原生翻译'插件</li>
+                            <li><b>教程2 | 0316 本地PDF精准翻译</b>: 0. 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF论文精准翻译'插件 4. <a href='https://md2pdf.netlify.app/'>md2pdf</a></li>
+                            <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染：vscode插件"Markdown Preview Enhanced"（保姆级教程：<a href='https://zhuanlan.zhihu.com/p/692337102'>知乎</a> ）</li>
+                            <li> 0416 如果PDF2PDF报错，麻烦手动去<a href='https://doc2x.com/login?invite_code=ZHDAPC'>Doc2X</a>转换md，然后将md文件传入后，选MD翻译插件（注册时，填我的邀请码ZHDAPC，可以获得更高的额度），他们也有免费的翻译</li>
+
+                            <li>🎉 <b>0623 之前便宜的3.5已经无了，现在换成了比较贵的渠道，感谢前些天大家的打赏，已经用于购买额度。如有必要，可以在左上角“模型”处，切换任意GPT3.5模型，推荐gpt-3.5-turbo，性价比高</b></li>
+
+                        </ol>
+                    </div>
+                </div>
+                <div class="image">
+                    <img src="https://i.imgtg.com/2023/07/21/OhqfTv.png" alt="OhqfTv.png" style="width: 80%">
+                </div>
+            </div>
+        </body>
+        </html>
+    """
+
+    # <li>🎉 欢迎大家随意<b>打赏和捐赠</b>->右边的二维码,非常感谢!您的捐赠将用于网站维护和api购置</li>
+    description =  "Github源代码开源和更新[地址🚀](https://github.com/binary-husky/gpt_academic), "
+    description += "感谢热情的[开发者们❤️](https://github.com/binary-husky/gpt_academic/graphs/contributors)."
+    description += "</br></br>常见问题请查阅[项目Wiki](https://github.com/binary-husky/gpt_academic/wiki), "
+    description += "如遇到Bug请前往[Bug反馈](https://github.com/binary-husky/gpt_academic/issues).或者加群931241203"
+    description += "</br></br>普通对话使用说明: 1. 输入问题; 2. 点击提交"
+    description += "</br></br>基础功能区使用说明: 1. 输入文本; 2. 点击任意基础功能区按钮"
+    description += "</br></br>函数插件区使用说明: 1. 输入路径/问题, 或者上传文件; 2. 点击任意函数插件区按钮"
+    description += "</br></br>虚空终端使用说明: 点击虚空终端, 然后根据提示输入指令, 再次点击虚空终端"
+
 
     # 一些普通功能模块
     from core_functional import get_core_functions
@@ -336,6 +435,7 @@ def main():
     # gradio的inbrowser触发不太稳定，回滚代码到原始的浏览器打开函数
     def run_delayed_tasks():
         import threading, webbrowser, time
+        print("export WEB_PORT=8886")
         print(f"如果浏览器没有自动打开，请复制并转到以下URL：")
         if DARK_MODE:   print(f"\t「暗色主题已启用（支持动态切换主题）」: http://localhost:{PORT}")
         else:           print(f"\t「亮色主题已启用（支持动态切换主题）」: http://localhost:{PORT}")
@@ -359,3 +459,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    print("export WEB_PORT=8886")

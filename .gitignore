@@ -156,3 +156,4 @@ request_llms/ChatGLM-6b-onnx-u8s8
 themes/common.js.min.*.js
 test.html
 objdump*
+get_api_sql.py

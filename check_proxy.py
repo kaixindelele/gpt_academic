@@ -1,44 +1,34 @@
 
-def check_proxy(proxies, return_ip=False):
+def check_proxy(proxies):
     import requests
     proxies_https = proxies['https'] if proxies is not None else '无'
-    ip = None
     try:
         response = requests.get("https://ipapi.co/json/", proxies=proxies, timeout=4)
         data = response.json()
+        # print(f'查询代理的地理位置，返回的结果是{data}')
         if 'country_name' in data:
             country = data['country_name']
             result = f"代理配置 {proxies_https}, 代理所在地：{country}"
-            if 'ip' in data: ip = data['ip']
         elif 'error' in data:
-            alternative, ip = _check_with_backup_source(proxies)
+            alternative = _check_with_backup_source(proxies)
             if alternative is None:
                 result = f"代理配置 {proxies_https}, 代理所在地：未知，IP查询频率受限"
             else:
                 result = f"代理配置 {proxies_https}, 代理所在地：{alternative}"
         else:
             result = f"代理配置 {proxies_https}, 代理数据解析失败：{data}"
-        if not return_ip:
-            print(result)
-            return result
-        else:
-            return ip
+        print(result)
+        return result
     except:
         result = f"代理配置 {proxies_https}, 代理所在地查询超时，代理可能无效"
-        if not return_ip:
-            print(result)
-            return result
-        else:
-            return ip
+        print(result)
+        return result
 
 def _check_with_backup_source(proxies):
     import random, string, requests
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
-    try:
-        res_json = requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()
-        return res_json['dns']['geo'], res_json['dns']['ip']
-    except:
-        return None, None
+    try: return requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()['dns']['geo']
+    except: return None
 
 def backup_and_download(current_version, remote_version):
     """
@@ -56,9 +46,9 @@ def backup_and_download(current_version, remote_version):
         return new_version_dir
     os.makedirs(new_version_dir)
     shutil.copytree('./', backup_dir, ignore=lambda x, y: ['history'])
-    proxies = get_conf('proxies')
-    try:    r = requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
-    except: r = requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True)
+    proxies, = get_conf('proxies')
+    r = requests.get(
+        'https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
     zip_file_path = backup_dir+'/master.zip'
     with open(zip_file_path, 'wb+') as f:
         f.write(r.content)
@@ -82,7 +72,7 @@ def patch_and_restart(path):
     import sys
     import time
     import glob
-    from shared_utils.colorful import print亮黄, print亮绿, print亮红
+    from colorful import print亮黄, print亮绿, print亮红
     # if not using config_private, move origin config.py as config_private.py
     if not os.path.exists('config_private.py'):
         print亮黄('由于您没有设置config_private.py私密配置，现将您的现有配置移动至config_private.py以防止配置丢失，',
@@ -92,7 +82,7 @@ def patch_and_restart(path):
     dir_util.copy_tree(path_new_version, './')
     print亮绿('代码已经更新，即将更新pip包依赖……')
     for i in reversed(range(5)): time.sleep(1); print(i)
-    try:
+    try: 
         import subprocess
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
     except:
@@ -121,10 +111,11 @@ def auto_update(raise_error=False):
     try:
         from toolbox import get_conf
         import requests
+        import time
         import json
-        proxies = get_conf('proxies')
-        try:    response = requests.get("https://raw.githubusercontent.com/binary-husky/chatgpt_academic/master/version", proxies=proxies, timeout=5)
-        except: response = requests.get("https://public.agent-matrix.com/publish/version", proxies=proxies, timeout=5)
+        proxies, = get_conf('proxies')
+        response = requests.get(
+            "https://raw.githubusercontent.com/binary-husky/chatgpt_academic/master/version", proxies=proxies, timeout=5)
         remote_json_data = json.loads(response.text)
         remote_version = remote_json_data['version']
         if remote_json_data["show_feature"]:
@@ -135,8 +126,9 @@ def auto_update(raise_error=False):
             current_version = f.read()
             current_version = json.loads(current_version)['version']
         if (remote_version - current_version) >= 0.01-1e-5:
-            from shared_utils.colorful import print亮黄
-            print亮黄(f'\n新版本可用。新版本:{remote_version}，当前版本:{current_version}。{new_feature}')
+            from colorful import print亮黄
+            print亮黄(
+                f'\n新版本可用。新版本:{remote_version}，当前版本:{current_version}。{new_feature}')
             print('（1）Github更新地址:\nhttps://github.com/binary-husky/chatgpt_academic\n')
             user_instruction = input('（2）是否一键更新代码（Y+回车=确认，输入其他/无输入+回车=不更新）？')
             if user_instruction in ['Y', 'y']:
@@ -162,26 +154,18 @@ def auto_update(raise_error=False):
         print(msg)
 
 def warm_up_modules():
-    print('正在执行一些模块的预热 ...')
+    print('正在执行一些模块的预热...')
     from toolbox import ProxyNetworkActivate
-    from request_llms.bridge_all import model_info
+    from request_llm.bridge_all import model_info
     with ProxyNetworkActivate("Warmup_Modules"):
         enc = model_info["gpt-3.5-turbo"]['tokenizer']
         enc.encode("模块预热", disallowed_special=())
-        enc = model_info["gpt-4"]['tokenizer']
-        enc.encode("模块预热", disallowed_special=())
-
-def warm_up_vectordb():
-    print('正在执行一些模块的预热 ...')
-    from toolbox import ProxyNetworkActivate
-    with ProxyNetworkActivate("Warmup_Modules"):
-        import nltk
-        with ProxyNetworkActivate("Warmup_Modules"): nltk.download("punkt")
-
+        # enc = model_info["gpt-4"]['tokenizer']
+        # enc.encode("模块预热", disallowed_special=())
 
 if __name__ == '__main__':
     import os
     os.environ['no_proxy'] = '*'  # 避免代理网络产生意外污染
     from toolbox import get_conf
-    proxies = get_conf('proxies')
+    proxies, = get_conf('proxies')
     check_proxy(proxies)

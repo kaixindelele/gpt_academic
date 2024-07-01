@@ -1,4 +1,6 @@
 https://public.agent-matrix.com/publish/gradio-3.32.10-py3-none-any.whl
+./jieba-0.42.1-py3-none-any.whl
+./flashtext-2.7-py2.py3-none-any.whl
 fastapi==0.110
 gradio-client==0.8
 pypdf2==2.12.1
@@ -30,3 +32,5 @@ rjsmin
 arxiv
 numpy
 rich
+pymysql
+sshtunnel
