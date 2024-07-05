@@ -288,6 +288,8 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
         #  <-------- 文本碎片重组为完整的tex片段 ---------->
         pfg.sp_file_result = []
         for i_say, gpt_say, orig_content in zip(gpt_response_collection[0::2], gpt_response_collection[1::2], pfg.sp_file_contents):
+            print("latex gpt_say:", gpt_say.strip())
+            gpt_say = gpt_say.strip().replace("```latex", "").replace("```", "")
             pfg.sp_file_result.append(gpt_say)
         pfg.merge_result()
 

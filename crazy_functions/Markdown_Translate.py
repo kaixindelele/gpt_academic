@@ -117,16 +117,25 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
 
     #  <-------- 多线程翻译开始 ---------->
     if language == 'en->zh':
-        if len(more_req) == 0:
-            inputs_array = ["This is a Markdown file, translate it into Chinese, do NOT modify any existing Markdown commands" +
-                            f"\n\n{frag}" for frag in pfg.sp_file_contents]
-            inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
-            sys_prompt_array = ["You are a professional academic paper translator."  + plugin_kwargs.get("additional_prompt", "") for _ in range(n_split)]
-        else:
-            # inputs_array = ["This is a Markdown file, translate it into Chinese, do NOT modify any existing Markdown commands, do NOT use code wrapper (```), and you should follow this requirement:" + str(more_req) + "\n The text is " +
-            #                 f"\n\n{frag}" for frag in pfg.sp_file_contents]
-            inputs_array = [f"""
-            This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {more_req}.\n
+        # if len(more_req) == 0:
+        #     inputs_array = ["This is a Markdown file, translate it into Chinese, do NOT modify any existing Markdown commands" +
+        #                     f"\n\n{frag}" for frag in pfg.sp_file_contents]
+        #     inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
+        #     sys_prompt_array = ["You are a professional academic paper translator."  + plugin_kwargs.get("additional_prompt", "") for _ in range(n_split)]
+        # else:
+        # 这里的列表就得详细的循环：
+        inputs_array = []
+        for frag in pfg.sp_file_contents:
+            cur_term = {}
+            for key, value in default_term_dict.items():
+                if key.lower() in frag.lower():
+                    cur_term.update({key:value})
+            print("cur_term:", cur_term)
+            cur_term = '```' + str(cur_term) + '```'
+            cur_input = f"""
+            This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {cur_term}\n
+
+            {user_prompt}.\n
                             Some requests for translation are as follows:
                             - Please keep these terms accurate when translating.
                             - Please keep the chapter title text accurate and clear.
@@ -137,33 +146,8 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
                             translated text.
                             ```
                             The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n
-                            """ for frag in pfg.sp_file_contents]
-
-            # 这里的列表就得详细的循环：
-            inputs_array = []
-            for frag in pfg.sp_file_contents:
-                cur_term = {}
-                for key, value in default_term_dict.items():
-                    if key.lower() in frag.lower():
-                        cur_term.update({key:value})
-                print("cur_term:", cur_term)
-                cur_term = '```' + str(cur_term) + '```'
-                cur_input = f"""
-                This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {cur_term}\n
-
-                {user_prompt}.\n
-                                Some requests for translation are as follows:
-                                - Please keep these terms accurate when translating.
-                                - Please keep the chapter title text accurate and clear.
-                                - Please keep the accuracy of the output format in Markdown format.
-                                \n
-                                Your output format is
-                                ```markdown
-                                translated text.
-                                ```
-                                The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n
-                                """
-                inputs_array.append(cur_input)
+                            """
+            inputs_array.append(cur_input)
 
             inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
             sys_prompt_array = ["You are a professional academic paper translator."  + plugin_kwargs.get("additional_prompt", "") for _ in range(n_split)]
@@ -191,7 +175,9 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
     try:
         pfg.sp_file_result = []
         for i_say, gpt_say in zip(gpt_response_collection[0::2], gpt_response_collection[1::2]):
-            # gpt_say = gpt_say.strip().replace("```markdown", "").replace("```", "")
+            if "```markdown" in gpt_say.strip():
+                print("gpt_say:", gpt_say.strip())
+                gpt_say = gpt_say.strip().replace("```markdown", "").replace("```", "")
             pfg.sp_file_result.append(gpt_say)
         pfg.merge_result()
         # pfg.write_result(language)

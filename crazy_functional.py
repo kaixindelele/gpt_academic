@@ -61,6 +61,15 @@ def get_crazy_functions():
         #     "Function": HotReload(批量PDF2PDF文档)
         # },
 
+        "本地PDF论文-精准翻译[md用vscode的Markdown PDF转PDF]": {
+            "Group": "学术",
+            "Color": "stop",
+            "AsButton": True,
+            "Info": "精准翻译PDF论文为中文 | 输入参数为路径",
+            "Function": HotReload(批量翻译PDF文档), # 当注册Class后，Function旧接口仅会在“虚空终端”中起作用
+            "Class": PDF_Tran,  # 新一代插件需要注册Class
+        },
+
         "Markdown英译中（术语库可以在高级参数输入区添加）": {
             "Group": "学术",
             "Color": "stop",
@@ -89,15 +98,7 @@ def get_crazy_functions():
             "Function": HotReload(批量生成函数注释)
         },
 
-        "本地PDF论文-精准翻译[md用vscode的Markdown PDF转PDF]": {
-            "Group": "学术",
-            "Color": "stop",
-            "AsButton": True,
-            "Info": "精准翻译PDF论文为中文 | 输入参数为路径",
-            "Function": HotReload(批量翻译PDF文档), # 当注册Class后，Function旧接口仅会在“虚空终端”中起作用
-            "Class": PDF_Tran,  # 新一代插件需要注册Class
-        },
-
+        
         "英文Latex项目全文润色（输入路径或上传压缩包）": {
             "Group": "学术",
             "Color": "stop",

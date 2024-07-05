@@ -2,14 +2,35 @@ from toolbox import update_ui, trimmed_format_exc, get_conf, get_log_folder, pro
 from toolbox import CatchException, report_exception, update_ui_lastest_msg, zip_result, gen_time_str
 from functools import partial
 import glob, os, requests, time, json, tarfile
+import re
 
 pj = os.path.join
 ARXIV_CACHE_DIR = get_conf("ARXIV_CACHE_DIR")
 
+def extract_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')
+        term_dict = eval(dict_str)
+        return term_dict
+    else:
+        return {}
+
+def extract_exclude_dict_from_string(term_str):
+    dict_pattern = re.compile(r'{.*}', re.DOTALL)
+    dict_match = dict_pattern.search(term_str)
+
+    if dict_match:
+        dict_str = dict_match.group().replace('\n', '')        
+        return term_str.replace(dict_str, '')
+    else:
+        return term_str
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 工具函数 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # 专业词汇声明  = 'If the term "agent" is used in this section, it should be translated to "智能体". '
-def switch_prompt(pfg, mode, more_requirement):
+def switch_prompt(pfg, mode, more_requirement='', title=''):
     """
     Generate prompts and system prompts based on the mode for proofreading or translating.
     Args:
@@ -21,19 +42,90 @@ def switch_prompt(pfg, mode, more_requirement):
     - sys_prompt_array: A list of strings containing prompts for system prompts.
     """
     n_split = len(pfg.sp_file_contents)
+    print("more_requirement:", more_requirement)    
+    # 读取本地默认术语    
+    with open('all_terms.json', 'r') as file:
+        default_term_dict = json.load(file)
+    user_prompt = ""
+    user_prompt = ""
+    if len(more_requirement) > 0:
+        # 先消除no-cache的内容
+        more_requirement = more_requirement.replace("--no-cache", "")
+        # 然后再读取术语的部分：字典和剩余指令
+        user_term_dict = extract_dict_from_string(more_requirement)
+        user_prompt = extract_exclude_dict_from_string(more_requirement)
+        user_prompt = user_prompt.strip()
+        # 访问数据
+        print("default_term_dict:", default_term_dict)
+        # 合并两个术语字典：
+        default_term_dict.update(user_term_dict)
+
     if mode == 'proofread_en':
         inputs_array = [r"Below is a section from an academic paper, proofread this section." +
                         r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + more_requirement +
                         r"Answer me only with the revised text:" +
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
         sys_prompt_array = ["You are a professional academic paper writer." for _ in range(n_split)]
+    elif mode == "proofread_zh":
+        inputs_array = [r"下面是一篇中文学术论文的章节, 请你对它进行校对." + 
+                        r"你要关注论文的逻辑性、连贯性、可读性、是否有错别字、标点符号的使用、`的地得的正确使用`." + 
+                        r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " + more_requirement +
+                        r"Answer me only with the revised text:" + 
+                        f"\n\n{frag}" for frag in pfg.sp_file_contents]
+        sys_prompt_array = ["You are a professional Chinese academic paper proofreader." for _ in range(n_split)]
     elif mode == 'translate_zh':
-        inputs_array = [
-            r"Below is a section from an English academic paper, translate it into Chinese. " + more_requirement +
-            r"Do not modify any latex command such as \section, \cite, \begin, \item and equations. " +
-            r"Answer me only with the translated text:" +
-            f"\n\n{frag}" for frag in pfg.sp_file_contents]
-        sys_prompt_array = ["You are a professional translator." for _ in range(n_split)]
+        inputs_array = []
+        for frag in pfg.sp_file_contents:
+            cur_term = {}
+            for key, value in default_term_dict.items():
+                if key.lower() in frag.lower():
+                    cur_term.update({key:value})
+            print("cur_term:", cur_term)
+            cur_term = '`' + str(cur_term) + '`'
+            
+            if user_prompt:
+                cur_input = f""" Please translate the LaTeX format fragment of an English academic paper into authentic Simplified Chinese according to the following instructions.
+                === Here are some translation requirements: 
+                - In the translation, please refer to the following terminology dict: {cur_term}. 
+                - For special or rare professional terms, please add parentheses after the translation to indicate the original English term. 
+                - Please translate according to the specific requirements given by {user_prompt}. 
+                - Maintain the accuracy of the output LaTeX format and ensure that LaTeX commands (such as \section, \cite, \begin, \item, etc.) are not modified. 
+                - Do not translate the content within formulas and tables, and maintain the correctness of the LaTeX format. 
+                === 
+                The following is the LaTeX text fragment that needs to be translated: 
+                \n\n
+                ```
+                {frag}
+                ```
+                ===
+                Your output needed to be enclosed with triple backticks, as following:
+                ```latex
+                translated content
+                ```
+                """
+            else:
+                cur_input = f""" Please translate the LaTeX format fragment of an English academic paper into authentic Simplified Chinese according to the following instructions.
+                === Here are some translation requirements: 
+                - In the translation, please refer to the following terminology dict: {cur_term}. 
+                - For special or rare professional terms, please add parentheses after the translation to indicate the original English term. 
+                - Maintain the accuracy of the output LaTeX format and ensure that LaTeX commands (such as \section, \cite, \begin, \item, etc.) are not modified. 
+                - Do not translate the content within formulas and tables, and maintain the correctness of the LaTeX format. 
+                === 
+                The following is the LaTeX text fragment that needs to be translated: 
+                \n\n
+                ```
+                {frag}
+                ```
+                ===
+                Your output needed to be enclosed with triple backticks, as following:
+                ```latex
+                translated content
+                ```
+                
+                """
+            inputs_array.append(cur_input)
+
+        sys_prompt_array = [f"You are a professional academic translator with Latex format." for _ in range(n_split)]
     else:
         assert False, "未知指令"
     return inputs_array, sys_prompt_array
@@ -320,8 +412,7 @@ def Latex翻译中文并重新编译PDF(txt, llm_kwargs, plugin_kwargs, chatbot,
     more_req = plugin_kwargs.get("advanced_arg", "")
     no_cache = more_req.startswith("--no-cache")
     if no_cache: more_req.lstrip("--no-cache")
-    allow_cache = not no_cache
-    _switch_prompt_ = partial(switch_prompt, more_requirement=more_req)
+    allow_cache = not no_cache    
 
     # <-------------- check deps ------------->
     try:
@@ -370,6 +461,9 @@ def Latex翻译中文并重新编译PDF(txt, llm_kwargs, plugin_kwargs, chatbot,
     from shared_utils.fastapi_server import validate_path_safety
     validate_path_safety(project_folder, chatbot.get_user())
     project_folder = move_project(project_folder, arxiv_id)
+
+    # <-------------- 获取论文标题，然后加入Prompt ------------->
+    _switch_prompt_ = partial(switch_prompt, more_requirement=more_req)
 
     # <-------------- if merge_translate_zh is already generated, skip gpt req ------------->
     if not os.path.exists(project_folder + '/merge_translate_zh.tex'):

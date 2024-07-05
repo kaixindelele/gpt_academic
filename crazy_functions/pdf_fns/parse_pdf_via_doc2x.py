@@ -228,7 +228,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             # content = re.sub(r'^<table>', r'.<table>', content, flags=re.MULTILINE)
             with open(generated_fp, 'w', encoding='utf8') as f: f.write(content)
             # 生成在线预览html
-            file_name = '在线预览翻译' + gen_time_str() + '.html'
+            file_name = '在线预览翻译-Ctrl+P打印-导出PDF' + gen_time_str() + '.html'
             preview_fp = os.path.join(ex_folder, file_name)
             from shared_utils.advanced_markdown_format import markdown_convertion_for_file
             with open(generated_fp, "r", encoding="utf-8") as f:
@@ -238,7 +238,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             promote_file_to_downloadzone(preview_fp, chatbot=chatbot)
             # 生成包含图片的压缩包
             dest_folder = get_log_folder(chatbot.get_user())
-            zip_name = '翻译后的带图文档.zip'
+            zip_name = '翻译后的带图文档-可用于手动修正-需要vscode.zip'
             zip_folder(source_folder=ex_folder, dest_folder=dest_folder, zip_name=zip_name)
             zip_fp = os.path.join(dest_folder, zip_name)
             promote_file_to_downloadzone(zip_fp, chatbot=chatbot)
