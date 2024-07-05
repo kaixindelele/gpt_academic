@@ -947,7 +947,7 @@ async function GptAcademicJavaScriptInit(dark, prompt, live2d, layout, tts) {
 
     //  自动朗读
     if (tts != "DISABLE"){
-        enable_tts = true;
+        enable_tts = false;
         if (getCookie("js_auto_read_cookie")) {
             auto_read_tts = getCookie("js_auto_read_cookie")
             auto_read_tts = auto_read_tts == "True";

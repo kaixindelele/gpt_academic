@@ -591,6 +591,7 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
     if llm_kwargs['llm_model'].startswith('vllm-'):
         api_key = 'no-api-key'
     else:
+        print("llm_kwargs:", llm_kwargs)
         api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
     # 先判断是否是敏感词：
     # 加载敏感词库：

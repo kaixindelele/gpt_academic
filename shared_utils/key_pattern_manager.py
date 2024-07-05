@@ -152,8 +152,10 @@ def select_api_key(keys, llm_model):
     else:
         # print("keys:", keys)
         key_list = [keys]
-    key_list = [key for key in key_list if len(key) > 0]
+    if len(key_list) > 1:
+        key_list = [key for key in key_list if len(key) > 0]    
 
+    print("key_list:", len(key_list))
     # 判断用户是不是VIP。
     try:
         with open('vip_apis.txt', 'r', encoding='utf8') as f:
@@ -165,8 +167,8 @@ def select_api_key(keys, llm_model):
                 vip_apis = vip_apis.split(',')
             elif len(vip_apis) == 51:
                 vip_apis = [vip_apis]
-
-        key_list = vip_apis
+        if len(vip_apis) > 0:
+            key_list = vip_apis
     except Exception as e:
         # print("读取VIP名单失败，将不会使用VIP列表", e)
         vip_apis = []
@@ -215,14 +217,15 @@ def select_api_key(keys, llm_model):
     print("live_apis_num:", len(avail_key_list))
 
     if llm_model.startswith('gpt-'):
-        # 从mysql数据库中选一个：
-        apikey, url = get_data()
-        print("mysql_apikey:", apikey)
-        print("mysql_apikey url:", url)
+        api_key = random.choice(avail_key_list)
+        # # 从mysql数据库中选一个：
+        # apikey, url = get_data()
+        # print("mysql_apikey:", apikey)
+        # print("mysql_apikey url:", url)
 
-        avail_key_list = [apikey]
+        # avail_key_list = [apikey]
 
-        api_key = random.choice(avail_key_list) # 随机负载均衡
+        # api_key = random.choice(avail_key_list) # 随机负载均衡
         print("current_selected_api_key:", api_key)
 
     return api_key
