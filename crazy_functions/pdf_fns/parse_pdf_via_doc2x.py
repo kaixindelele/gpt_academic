@@ -5,6 +5,7 @@ from toolbox import generate_file_link, zip_folder
 from crazy_functions.crazy_utils import get_files_from_everything
 from shared_utils.colorful import *
 import os
+import random
 
 def refresh_key(doc2x_api_key):
     import requests, json
@@ -70,7 +71,24 @@ def 解析PDF_DOC2X_转Latex(pdf_file_path):
 
     return latex_unzip_path
 
+def add_doc_black_list(result, api_key):
+    print("result:", result)
+    result = str(result)
+    if "pages limit exceeded" in result:
+        # 先读取现有的黑名单，如果没有则加进去：
+        cur_black_list = []
+        try:
+            with open('doc_black_apis.txt', 'r') as f:
+                for line in f.readlines():
+                    cur_black_list.append(line.strip())
+        except FileNotFoundError:
+            with open('doc_black_apis.txt', 'w') as f:
+                f.write("")
 
+        if api_key not in cur_black_list:
+            print("add black list:", api_key)
+            with open('doc_black_apis.txt', 'a+') as f:
+                f.write(api_key + '\n')
 
 
 def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, DOC2X_API_KEY, user_request):
@@ -80,6 +98,29 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         import requests, json, os
         markdown_dir = get_log_folder(plugin_name="pdf_ocr")
         doc2x_api_key = DOC2X_API_KEY
+        if '\n' in doc2x_api_key:
+            doc2x_api_key = doc2x_api_key.split('\n')
+            doc2x_api_key = [key.strip() for key in doc2x_api_key if len(key) > 0]
+            print("all_docs:", doc2x_api_key)
+        if type(doc2x_api_key) is list:     
+            # 这里先查看是否有doc的black api 
+            try:
+                with open('doc_black_apis.txt', 'r', encoding='utf8') as f:
+                    black_apis = f.read().split('\n')
+            except Exception as e:
+                print("读取黑名单失败，将不会使用黑名单", e)
+                black_apis = []
+            avail_key_list = []
+            for k in doc2x_api_key:
+                # 在这儿判断这些key是否在黑名单中
+                if k not in black_apis: 
+                    avail_key_list.append(k)
+            if len(avail_key_list) > 0:        
+                doc2x_api_key = random.choice(avail_key_list)
+                print("doc2x_api_key:", doc2x_api_key)
+
+            else:
+                raise RuntimeError("目前doc2x的api已用完，请手动去doc2x网页转编辑，然后用md翻译。")
         if doc2x_api_key.startswith('sk-'):
             url = "https://api.doc2x.noedgeai.com/api/v1/pdf"
         else:

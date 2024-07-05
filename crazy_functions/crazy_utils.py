@@ -75,6 +75,7 @@ def request_gpt_model_in_new_thread_with_ui_alive(
     import time
     from concurrent.futures import ThreadPoolExecutor
     from request_llms.bridge_all import predict_no_ui_long_connection
+    from request_llms.bridge_chatgpt import predict_no_ui_long_connection as gpt_noui
     # 用户反馈
     chatbot.append([inputs_show_user, ""])
     yield from update_ui(chatbot=chatbot, history=[]) # 刷新界面
@@ -91,10 +92,15 @@ def request_gpt_model_in_new_thread_with_ui_alive(
             if len(mutable) >= 2 and (time.time()-mutable[1]) > watch_dog_patience:
                 raise RuntimeError("检测到程序终止。")
             try:
-                # 【第一种情况】：顺利完成
-                result = predict_no_ui_long_connection(
-                    inputs=inputs, llm_kwargs=llm_kwargs,
-                    history=history, sys_prompt=sys_prompt, observe_window=mutable)
+                # 【第一种情况】：顺利完成         
+                # 如果模型是gpt开头的，请调用对应的no ui：
+                if llm_kwargs['llm_model'].startswith("gpt-"):
+                    result = gpt_noui(inputs=inputs, llm_kwargs=llm_kwargs,
+                        history=history, sys_prompt=sys_prompt, observe_window=mutable)
+                else:
+                    result = predict_no_ui_long_connection(
+                        inputs=inputs, llm_kwargs=llm_kwargs,
+                        history=history, sys_prompt=sys_prompt, observe_window=mutable)
                 return result
             except ConnectionAbortedError as token_exceeded_error:
                 # 【第二种情况】：Token溢出
@@ -203,6 +209,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     import time, random
     from concurrent.futures import ThreadPoolExecutor
     from request_llms.bridge_all import predict_no_ui_long_connection
+    from request_llms.bridge_chatgpt import predict_no_ui_long_connection as gpt_noui
     assert len(inputs_array) == len(history_array)
     assert len(inputs_array) == len(sys_prompt_array)
     if max_workers == -1: # 读取配置文件
@@ -236,10 +243,17 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
             if detect_timeout(): raise RuntimeError("检测到程序终止。")
             try:
                 # 【第一种情况】：顺利完成
-                gpt_say = predict_no_ui_long_connection(
-                    inputs=inputs, llm_kwargs=llm_kwargs, history=history,
-                    sys_prompt=sys_prompt, observe_window=mutable[index], console_slience=True
-                )
+                # 如果模型是gpt开头的，需要将endpoint的链接替换掉。
+                if llm_kwargs['llm_model'].startswith("gpt-"):
+                    gpt_say = gpt_noui(
+                        inputs=inputs, llm_kwargs=llm_kwargs, history=history,
+                        sys_prompt=sys_prompt, observe_window=mutable[index], console_slience=True
+                    )
+                else:
+                    gpt_say = predict_no_ui_long_connection(
+                        inputs=inputs, llm_kwargs=llm_kwargs, history=history,
+                        sys_prompt=sys_prompt, observe_window=mutable[index], console_slience=True
+                    )
                 mutable[index][2] = "已成功"
                 return gpt_say
             except ConnectionAbortedError as token_exceeded_error:

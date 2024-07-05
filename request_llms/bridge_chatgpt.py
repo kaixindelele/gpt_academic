@@ -30,6 +30,21 @@ from toolbox import ChatBotWithCookies, have_any_recent_upload_image_files, enco
 proxies, TIMEOUT_SECONDS, MAX_RETRY, API_ORG, AZURE_CFG_ARRAY = \
     get_conf('proxies', 'TIMEOUT_SECONDS', 'MAX_RETRY', 'API_ORG', 'AZURE_CFG_ARRAY')
 
+API_KEYS = get_conf("API_KEY")
+BASE_URLS = get_conf("BASE_URL")
+if ',' in API_KEYS:
+    API_KEYS = API_KEYS.strip().split(",")
+    API_KEYS = [key.strip() for key in API_KEYS if len(key) > 0 and key.startswith('sk-')]
+else:
+    API_KEYS = [API_KEYS.strip()]
+
+if ',' in BASE_URLS:
+    BASE_URLS = BASE_URLS.strip().split(",")
+    BASE_URLS = [url.strip() for url in BASE_URLS if len(url) > 0]
+else:
+    BASE_URLS = [BASE_URLS.strip()]
+
+
 timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check proxy settings in config.py.' + \
                   '网络错误，检查代理服务器是否可用，以及代理设置的格式是否正确，格式须是[协议]://[地址]:[端口]，缺一不可。'
 
@@ -135,7 +150,8 @@ def check_sensitive(input, zz_sensitive_words, sq_sensitive_words, key, llm_kwar
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
             # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
-            endpoint = get_endpoint()
+            # endpoint = get_endpoint()
+            endpoint = BASE_URLS[API_KEYS.index(key)]
             endpoint = endpoint + "/v1/chat/completions"
             print("endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
@@ -305,7 +321,8 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
             # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
-            endpoint = get_endpoint()
+            # endpoint = get_endpoint()
+            endpoint = BASE_URLS[API_KEYS.index(headers["Authorization"].replace("Bearer ", ""))]
             endpoint = endpoint + "/v1/chat/completions"
             print("last endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,
@@ -430,7 +447,8 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
             # make a POST request to the API endpoint, stream=True
             from .bridge_all import model_info
             # endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
-            endpoint = get_endpoint()
+            # endpoint = get_endpoint()
+            endpoint = BASE_URLS[API_KEYS.index(headers["Authorization"].replace("Bearer ", ""))]
             endpoint = endpoint + "/v1/chat/completions"
             print("endpoint:", endpoint)
             response = requests.post(endpoint, headers=headers, proxies=proxies,

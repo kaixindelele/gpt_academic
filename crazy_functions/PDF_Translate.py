@@ -66,6 +66,7 @@ def 批量翻译PDF文档(txt, llm_kwargs, plugin_kwargs, chatbot, history, syst
     if method is None:
         # ------- 以上三种方法都试一遍 -------
         DOC2X_API_KEY = get_conf("DOC2X_API_KEY")
+        print("env_docx:", DOC2X_API_KEY)
         if len(DOC2X_API_KEY) != 0:
             try:
                 yield from 解析PDF_基于DOC2X(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, DOC2X_API_KEY, user_request)

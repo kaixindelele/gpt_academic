@@ -109,11 +109,9 @@ def main():
                             <li>请注意数据隐私保护，不要上传<b>涉密和重要的个人数据</b>；</li>
                             <li>bug或连不上请加群反馈931241203; 需提交明确的<b>操作步骤和报错信息截图</b>；</li>
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
-                            <li> 0506 另外安利一个强大的PDF文档解析+公式识别工具：<a href='https://simpletex.cn/ai/latex_ocr'>simpletex</a></li>
-                            <li>🎉 <b>0623. 本地部署的Qwen14B将更新为2.0，可以适用英-中翻译。</b></i>
-                            <li>🎉 0623 如果3.5无法使用时，大家可以试试免费版的command模型，对话智力还行。</li>
-
+                            <li> 0506 另外安利一个强大的PDF文档解析+公式识别工具：<a href='https://simpletex.cn/ai/latex_ocr'>simpletex</a></li>                        
                             <li>🎉 <b>0623 翻译已经支持术语库，在右下角高级参数输入区填入，格式为字典，推荐输入一个大的术语库，注意英文引号，格式如下：```{"agent": "智能体", "transformer": "transformer"}```</b></li>
+                            <li>🎉 0705 如果3.5报错，请使用glm和deepseek，以及command。</li>
                         </ol>
                     </div>
                 </div>
@@ -125,7 +123,7 @@ def main():
                             <li><b>教程3 | 0416 借助<a href='https://doc2x.com/'>Doc2X</a>，上线重磅本地PDF2PDF完美翻译！</b>: 本地PDF压缩：<a href='https://www.ilovepdf.com/zh-cn/'>ilovePDF</a> 1.右下角上传PDF文件, 2.等待左上角显示路径加载好后, 3.点'本地PDF2PDF翻译'插件 4. PDF渲染：vscode插件"Markdown Preview Enhanced"（保姆级教程：<a href='https://zhuanlan.zhihu.com/p/692337102'>知乎</a> ）</li>
                             <li> 0416 如果PDF2PDF报错，麻烦手动去<a href='https://doc2x.com/login?invite_code=ZHDAPC'>Doc2X</a>转换md，然后将md文件传入后，选MD翻译插件（注册时，填我的邀请码ZHDAPC，可以获得更高的额度），他们也有免费的翻译</li>
 
-                            <li>🎉 <b>0623 之前便宜的3.5已经无了，现在换成了比较贵的渠道，感谢前些天大家的打赏，已经用于购买额度。如有必要，可以在左上角“模型”处，切换任意GPT3.5模型，推荐gpt-3.5-turbo，性价比高</b></li>
+                            <li>🎉 <b>0705 最近3.5的渠道又贵又不稳定，已增加国产的llm，感谢前些天大家的打赏，已经用于购买3.5额度。如有必要，可以在左上角“模型”处，切换任意GPT3.5模型，推荐gpt-3.5-turbo，性价比高</b></li>
 
                         </ol>
                     </div>
@@ -249,7 +247,7 @@ def main():
                             with gr.Row():
                                 switchy_bt = gr.Button(r"请先从插件列表中选择", variant="secondary", elem_id="elem_switchy_bt").style(size="sm")
                     with gr.Row():
-                        with gr.Accordion("点击展开“文件下载区”。", open=False) as area_file_up:
+                        with gr.Accordion("点击展开“文件下载区”。", open=True) as area_file_up:
                             file_upload = gr.Files(label="任何文件, 推荐上传压缩文件(zip, tar)", file_count="multiple", elem_id="elem_upload")
 
         from themes.gui_toolbar import define_gui_toolbar
@@ -461,3 +459,4 @@ def main():
 if __name__ == "__main__":
     main()
     print("export WEB_PORT=8886")
+    # export WEB_PORT=8886
