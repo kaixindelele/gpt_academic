@@ -65,6 +65,7 @@ def cut(limit, get_token_fn, txt_tocut, must_break_at_empty_line, break_anyway=F
                 # 如果没有找到合适的切分点
                 if break_anyway:
                     # 是否允许暴力切分
+                    print("开启暴力切分！")
                     prev, post = force_breakdown(remain_txt_to_cut, limit, get_token_fn)
                 else:
                     # 不允许直接报错

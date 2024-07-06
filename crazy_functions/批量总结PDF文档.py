@@ -83,7 +83,7 @@ do not have too much repetitive information, numerical values using the original
         """
         # This prompt is from https://github.com/kaixindelele/ChatPaper/blob/main/chat_paper.py
         file_write_buffer.extend(final_results)
-        i_say, final_results = input_clipping(i_say, final_results, max_token_limit=2000)
+        i_say, final_results = input_clipping(i_say, final_results, max_token_limit=2048)
         gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
             inputs=i_say, inputs_show_user='开始最终总结',
             llm_kwargs=llm_kwargs, chatbot=chatbot, history=final_results,

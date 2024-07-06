@@ -19,16 +19,18 @@ class PaperFileGroup():
         def get_token_num(txt): return len(enc.encode(txt, disallowed_special=()))
         self.get_token_num = get_token_num
 
-    def run_file_split(self, max_token_limit=2048):
+    def run_file_split(self, max_token_limit=1024):
         """
-        将长文本分离开来
+        将长文本分离开来，分离的逻辑是什么？
         """
         for index, file_content in enumerate(self.file_contents):
+            # 如果文件内容的token数量小于限制，直接将其添加到分割后的文件内容列表中
             if self.get_token_num(file_content) < max_token_limit:
                 self.sp_file_contents.append(file_content)
                 self.sp_file_index.append(index)
                 self.sp_file_tag.append(self.file_paths[index])
-            else:
+            # 如果文件内容的token数量超过限制，使用 breakdown_text_to_satisfy_token_limit 函数将其分割成满足限制的片段
+            else:                
                 from crazy_functions.pdf_fns.breakdown_txt import breakdown_text_to_satisfy_token_limit
                 segments = breakdown_text_to_satisfy_token_limit(file_content, max_token_limit)
                 for j, segment in enumerate(segments):
@@ -51,6 +53,7 @@ class PaperFileGroup():
                 f.write(res)
         return manifest
 
+# 从用户输入中提取术语字典
 def extract_dict_from_string(term_str):
     dict_pattern = re.compile(r'{.*}', re.DOTALL)
     dict_match = dict_pattern.search(term_str)
@@ -62,6 +65,7 @@ def extract_dict_from_string(term_str):
     else:
         return {}
 
+# 反过来，从用户输入中提取剩余的指令
 def extract_exclude_dict_from_string(term_str):
     dict_pattern = re.compile(r'{.*}', re.DOTALL)
     dict_match = dict_pattern.search(term_str)
@@ -86,7 +90,7 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
             pfg.file_contents.append(file_content)
 
     #  <-------- 拆分过长的Markdown文件 ---------->
-    pfg.run_file_split(max_token_limit=2048)
+    pfg.run_file_split(max_token_limit=1024)
     n_split = len(pfg.sp_file_contents)
 
     more_req = plugin_kwargs.get("advanced_arg", "")
