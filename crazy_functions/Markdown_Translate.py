@@ -136,21 +136,56 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
                     cur_term.update({key:value})
             print("cur_term:", cur_term)
             cur_term = '```' + str(cur_term) + '```'
-            cur_input = f"""
-            This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms: {cur_term}\n
+            if len(more_req) == 0:
+                cur_input = f"""
+                    # Task:
+                    This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms.
+                    
+                    # Terms:
+                    {cur_term}.
+                    ```
+                    =====
+                    # Rules:
+                    1. Please keep these terms accurate when translating, if necessary, please include the original words in parentheses after obscure terminology.
+                    2. Please keep the accuracy of the output format in Markdown format.            
+                    ====
+                    # Output format:
+                    ```markdown
+                    translated text.
+                    ```
+                    ====
+                    # The needed be translated Markdown paragraph text: 
+                    ```
+                    {frag}
+                    ```
+                    """
+            else:
+                cur_input = f"""
+                    # Task:
+                    This is a Markdown paper paragraph text, you should translate it into authentic Chinese based on the following terms.
+                    
+                    # Terms:
+                    {cur_term}.
 
-            {user_prompt}.\n
-                            Some requests for translation are as follows:
-                            - Please keep these terms accurate when translating.
-                            - Please keep the chapter title text accurate and clear.
-                            - Please keep the accuracy of the output format in Markdown format.
-                            \n
-                            Your output format is
-                            ```markdown
-                            translated text.
-                            ```
-                            The actual Markdown paper paragraph text you want to translate is as follows: ```{frag}```.\n
-                            """
+                    # User additional Prompts: 
+                    ```
+                    {user_prompt}
+                    ```
+                    =====
+                    # Rules:
+                    1. Please keep these terms accurate when translating, if necessary, please include the original words in parentheses after obscure terminology.
+                    2. Please keep the accuracy of the output format in Markdown format.            
+                    ====
+                    # Output format:
+                    ```markdown
+                    translated text.
+                    ```
+                    ====
+                    # The needed be translated Markdown paragraph text: 
+                    ```
+                    {frag}
+                    ```
+                    """
             inputs_array.append(cur_input)
 
             inputs_show_user_array = [f"翻译 {f}" for f in pfg.sp_file_tag]
@@ -182,6 +217,11 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
             if "```markdown" in gpt_say.strip():
                 print("gpt_say:", gpt_say.strip())
                 gpt_say = gpt_say.strip().replace("```markdown", "").replace("```", "")
+                # 确保## 前面是换行符
+                pattern = r'(?<!\n)##'
+                repl = r'\n##'
+                gpt_say = re.sub(pattern, repl, gpt_say)
+
             pfg.sp_file_result.append(gpt_say)
         pfg.merge_result()
         # pfg.write_result(language)

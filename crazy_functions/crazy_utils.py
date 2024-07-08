@@ -161,6 +161,7 @@ def can_multi_process(llm) -> bool:
         if llm.startswith('api2d-'): return True
         if llm.startswith('azure-'): return True
         if llm.startswith('spark'): return True
+        if llm.startswith('siliconflow-'): return True
         if llm.startswith('zhipuai') or llm.startswith('glm-'): return True
         return False
 
@@ -219,6 +220,9 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     # 屏蔽掉 chatglm的多线程，可能会导致严重卡顿
     if not can_multi_process(llm_kwargs['llm_model']):
         max_workers = 1
+    # 将gpt的并发降低为5
+    if llm_kwargs['llm_model'].startswith('gpt-'):
+        max_workers = 5
 
     executor = ThreadPoolExecutor(max_workers=max_workers)
     n_frag = len(inputs_array)

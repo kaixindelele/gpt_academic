@@ -31,14 +31,15 @@ else:
     proxies = None
 
 # [step 3]>> 模型选择是 (注意: LLM_MODEL是默认选中的模型, 它*必须*被包含在AVAIL_LLM_MODELS列表中 )
-LLM_MODEL = "glm-4-flash" # 可选 ↓↓↓
+LLM_MODEL = "siliconflow-THUDM/glm-4-9b-chat" # 可选 ↓↓↓
 BASE_URL = ''
 
-AVAIL_LLM_MODELS = ["command-r-plus",
+AVAIL_LLM_MODELS = ["cohere-command-r-plus",
                     "gpt-3.5-turbo-0125", "gpt-3.5-turbo", 
-                    "glm-4-air", "glm-4-flash",
+                    "siliconflow-THUDM/glm-4-9b-chat", "siliconflow-01-ai/Yi-1.5-9B-Chat-16K",
                     'deepseek-coder', "deepseek-chat"
                     ]
+SILICONFLOW_API_KEY = ''
 # --- --- --- ---
 # P.S. 其他可用的模型还包括
 # AVAIL_LLM_MODELS = [

@@ -16,6 +16,9 @@ from toolbox import get_conf, trimmed_format_exc, apply_gpt_academic_string_mask
 from .bridge_chatgpt import predict_no_ui_long_connection as chatgpt_noui
 from .bridge_chatgpt import predict as chatgpt_ui
 
+from .bridge_siliconflow import predict_no_ui_long_connection as siliconflow_noui
+from .bridge_siliconflow import predict as siliconflow_ui
+
 from .bridge_chatgpt_vision import predict_no_ui_long_connection as chatgpt_vision_noui
 from .bridge_chatgpt_vision import predict as chatgpt_vision_ui
 
@@ -82,8 +85,9 @@ api2d_endpoint = "https://openai.api2d.net/v1/chat/completions"
 newbing_endpoint = "wss://sydney.bing.com/sydney/ChatHub"
 gemini_endpoint = "https://generativelanguage.googleapis.com/v1beta/models"
 claude_endpoint = "https://api.anthropic.com/v1/messages"
-cohere_endpoint = "https://api.cohere.ai/v1/chat"
+cohere_endpoint = "https://cohere-proxy-cohere-ekxzwzxrrp.us-west-1.fcapp.run/v1/chat"
 ollama_endpoint = "http://localhost:11434/api/chat"
+siliconflow_endpoint = "https://api.siliconflow.cn/v1/chat/completions"
 yimodel_endpoint = "https://api.lingyiwanwu.com/v1/chat/completions"
 deepseekapi_endpoint = "https://api.deepseek.com/v1/chat/completions"
 
@@ -468,7 +472,24 @@ model_info.update({
         "max_token": 1024 * 128,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
-    }
+    },
+    # siliconflow
+    "siliconflow-01-ai/Yi-1.5-9B-Chat-16K": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "siliconflow-THUDM/glm-4-9b-chat": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
 })
 # -=-=-=-=-=-=- api2d 对齐支持 -=-=-=-=-=-=-
 for model in AVAIL_LLM_MODELS:
