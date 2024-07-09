@@ -964,6 +964,7 @@ async function GptAcademicJavaScriptInit(dark, prompt, live2d, layout, tts) {
     hm.src = "https://hm.baidu.com/hm.js?208673d55832a94b9bbe10b1f4e70c09";
     var s = document.getElementsByTagName("script")[0]; 
     s.parentNode.insertBefore(hm, s);
+    })();
 
     // SysPrompt 系统静默提示词
     gpt_academic_gradio_saveload("load", "elem_prompt", "js_system_prompt_cookie", null, "str");
