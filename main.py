@@ -111,7 +111,7 @@ def main():
                             <li><a href="https://chatwithpaper.org">ChatPaper速读</a>+本网页的arXiv全文翻译 <a href="https://www.bilibili.com/video/BV1YP411D73Q">总结-对话教程</a> 快速摄取知识。</li>
                             <li> 0506 另外安利一个强大的PDF文档解析+公式识别工具：<a href='https://simpletex.cn/ai/latex_ocr'>simpletex</a></li>                        
                             <li>🎉 <b>0623 翻译已经支持术语库，在右下角高级参数输入区填入，格式为字典，推荐输入一个大的术语库，注意英文引号，格式如下：```{"agent": "智能体", "transformer": "transformer"}```</b></li>
-                            <li>🎉 0709 国产LLM太贵了！glm已欠费。目前白嫖硅基流动的glm4-9b和Yi-1.5-9B，本地PDF翻译还可以！arxiv翻译推荐用3.5，代码deepseek-coder，对话随意~</li>
+                            <li>🎉 0709 国产LLM太贵了！glm已欠费。目前白嫖硅基流动的Yi-1.5-9B和glm4-9b，本地PDF翻译还可以！只不过并发得降低了。arxiv翻译推荐用3.5，代码deepseek-coder，对话随意~</li>
                         </ol>
                     </div>
                 </div>

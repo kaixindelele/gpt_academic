@@ -950,12 +950,20 @@ async function GptAcademicJavaScriptInit(dark, prompt, live2d, layout, tts) {
         enable_tts = false;
         if (getCookie("js_auto_read_cookie")) {
             auto_read_tts = getCookie("js_auto_read_cookie")
-            auto_read_tts = auto_read_tts == "True";
+            auto_read_tts = auto_read_tts == "true";
             if (auto_read_tts) {
-                allow_auto_read_tts_flag = true;
+                allow_auto_read_tts_flag = false;
             }
         }
     }
+
+    // 设置百度统计：
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?208673d55832a94b9bbe10b1f4e70c09";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
 
     // SysPrompt 系统静默提示词
     gpt_academic_gradio_saveload("load", "elem_prompt", "js_system_prompt_cookie", null, "str");

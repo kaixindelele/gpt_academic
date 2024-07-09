@@ -31,7 +31,7 @@ else:
     proxies = None
 
 # [step 3]>> 模型选择是 (注意: LLM_MODEL是默认选中的模型, 它*必须*被包含在AVAIL_LLM_MODELS列表中 )
-LLM_MODEL = "siliconflow-THUDM/glm-4-9b-chat" # 可选 ↓↓↓
+LLM_MODEL = "siliconflow-01-ai/Yi-1.5-9B-Chat-16K" # 可选 ↓↓↓
 BASE_URL = ''
 
 AVAIL_LLM_MODELS = ["cohere-command-r-plus",
