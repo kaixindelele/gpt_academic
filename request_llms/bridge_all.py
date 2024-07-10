@@ -490,6 +490,46 @@ model_info.update({
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },
+    "siliconflow-THUDM/glm-4-9b-chat": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "siliconflow-deepseek-ai/DeepSeek-V2-Chat": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "siliconflow-Qwen/Qwen1.5-110B-Chat": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "siliconflow-Qwen/Qwen2-72B-Instruct": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
+    "siliconflow-01-ai/Yi-1.5-34B-Chat-16K": {
+        "fn_with_ui": siliconflow_ui,
+        "fn_without_ui": siliconflow_noui,
+        "endpoint": siliconflow_endpoint,
+        "max_token": 16385,
+        "tokenizer": tokenizer_gpt35,
+        "token_cnt": get_token_num_gpt35,
+    },
 })
 # -=-=-=-=-=-=- api2d 对齐支持 -=-=-=-=-=-=-
 for model in AVAIL_LLM_MODELS:

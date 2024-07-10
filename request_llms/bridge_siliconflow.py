@@ -458,7 +458,9 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
                 print("current_api_key:", current_api_key)
                 add_black_list(error_msg, current_api_key)
                 # 这时候需要重新采样一个api_key
-                new_api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+                # new_api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+                api_keys = get_conf("SILICONFLOW_API_KEYS")
+                new_api_key = random.choice(api_keys.split(','))
                 headers = {
                     "Content-Type": "application/json",
                     "Authorization": f"Bearer {new_api_key}"
@@ -521,7 +523,9 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
                     print("current_api_key:", current_api_key)
                     add_black_list(error_msg, current_api_key)
                     # 这时候需要重新采样一个api_key
-                    new_api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+                    # new_api_key = select_api_key(llm_kwargs['api_key'], llm_kwargs['llm_model'])
+                    api_keys = get_conf("SILICONFLOW_API_KEYS")
+                    new_api_key = random.choice(api_keys.split(','))
                     headers = {
                         "Content-Type": "application/json",
                         "Authorization": f"Bearer {new_api_key}"
@@ -590,7 +594,9 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
     if llm_kwargs['llm_model'].startswith('vllm-'):
         api_key = 'no-api-key'
     else:
-        api_key = get_conf("SILICONFLOW_API_KEY")
+        # api_key = get_conf("SILICONFLOW_API_KEY")
+        api_keys = get_conf("SILICONFLOW_API_KEYS")
+        api_key = random.choice(api_keys.split(','))
     # 先判断是否是敏感词：
     # 加载敏感词库：
     # 从 PKL 文件中读取并恢复 content 对象

@@ -149,12 +149,12 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
                     1. Please keep these terms accurate when translating, if necessary, please include the original words in parentheses after obscure terminology.
                     2. Please keep the accuracy of the output format in Markdown format.            
                     ====
-                    # Output format:
+                    # Output format (Don't output any other information except for translation of input text):
                     ```markdown
                     translated text.
                     ```
                     ====
-                    # The needed be translated Markdown paragraph text: 
+                    # The needed be translated Markdown input paragraph text: 
                     ```
                     {frag}
                     ```
@@ -176,12 +176,12 @@ def 多文件翻译(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
                     1. Please keep these terms accurate when translating, if necessary, please include the original words in parentheses after obscure terminology.
                     2. Please keep the accuracy of the output format in Markdown format.            
                     ====
-                    # Output format:
+                    # Output format (Don't output any other information except for translation of input text):
                     ```markdown
                     translated text.
                     ```
                     ====
-                    # The needed be translated Markdown paragraph text: 
+                    # The needed be translated Markdown input paragraph text: 
                     ```
                     {frag}
                     ```
