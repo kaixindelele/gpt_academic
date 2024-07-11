@@ -2,9 +2,21 @@ import os; os.environ['no_proxy'] = '*' # 避免代理网络产生意外污染
 import pickle
 import codecs
 import base64
+import agentops  # Import AgentOps
 
 def main():
     import socket
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    # Initialize AgentOps
+    AGENTOPS_API_KEY = os.getenv("AGENTOPS_API_KEY")
+    if not AGENTOPS_API_KEY:
+        raise ValueError("AGENTOPS_API_KEY not found in environment variables")
+
+    agentops.init(AGENTOPS_API_KEY)
+
+    @agentops.record_function('is_port_in_use')
     def is_port_in_use(port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
@@ -289,12 +301,14 @@ def main():
                         stopBtn2 = gr.Button("停止", variant="secondary"); stopBtn2.style(size="sm")
                         clearBtn2 = gr.Button("清除", variant="secondary", visible=False); clearBtn2.style(size="sm")
 
+        @agentops.record_function('to_cookie_str')
         def to_cookie_str(d):
             # Pickle the dictionary and encode it as a string
             pickled_dict = pickle.dumps(d)
             cookie_value = base64.b64encode(pickled_dict).decode('utf-8')
             return cookie_value
         
+        @agentops.record_function('from_cookie_str')
         def from_cookie_str(c):
             # Decode the base64-encoded string and unpickle it into a dictionary
             pickled_dict = base64.b64decode(c.encode('utf-8'))
@@ -312,6 +326,7 @@ def main():
                     with gr.Column(scale=1, min_width=70):
                         basic_fn_confirm = gr.Button("确认并保存", variant="primary"); basic_fn_confirm.style(size="sm")
                         basic_fn_load    = gr.Button("加载已保存", variant="primary"); basic_fn_load.style(size="sm")
+                        @agentops.record_function('assign_btn')
                         def assign_btn(persistent_cookie_, cookies_, basic_btn_dropdown_, basic_fn_title, basic_fn_prefix, basic_fn_suffix):
                             ret = {}
                             customize_fn_overwrite_ = cookies_['customize_fn_overwrite']
@@ -337,6 +352,7 @@ def main():
                             ret.update({persistent_cookie: persistent_cookie_})                             # write persistent cookie
                             return ret
                         
+                        @agentops.record_function('reflesh_btn')
                         def reflesh_btn(persistent_cookie_, cookies_):
                             ret = {}
                             for k in customize_btns:
@@ -361,6 +377,7 @@ def main():
                         h.then(None, [persistent_cookie], None, _js="""(persistent_cookie)=>{setCookie("persistent_cookie", persistent_cookie, 5);}""") # save persistent cookie
 
         # 功能区显示开关与功能区的互动
+        @agentops.record_function('fn_area_visibility')
         def fn_area_visibility(a):
             ret = {}
             ret.update({area_basic_fn: gr.update(visible=("基础功能区" in a))})
@@ -375,6 +392,7 @@ def main():
         checkboxes.select(fn_area_visibility, [checkboxes], [area_basic_fn, area_crazy_fn, area_input_primary, area_input_secondary, txt, txt2, clearBtn, clearBtn2, plugin_advanced_arg] )
 
         # 功能区显示开关与功能区的互动
+        @agentops.record_function('fn_area_visibility_2')
         def fn_area_visibility_2(a):
             ret = {}
             ret.update({area_customize: gr.update(visible=("自定义菜单" in a))})
@@ -417,6 +435,7 @@ def main():
             click_handle.then(on_report_generated, [cookies, file_upload, chatbot], [cookies, file_upload, chatbot])
             cancel_handles.append(click_handle)
         # 函数插件-下拉菜单与随变按钮的互动
+        @agentops.record_function('on_dropdown_changed')
         def on_dropdown_changed(k):
             variant = plugins[k]["Color"] if "Color" in plugins[k] else "secondary"
             info = plugins[k].get("Info", k)
@@ -428,10 +447,12 @@ def main():
             return ret
         dropdown.select(on_dropdown_changed, [dropdown], [switchy_bt, plugin_advanced_arg] )
 
+        @agentops.record_function('on_md_dropdown_changed')
         def on_md_dropdown_changed(k):
             return {chatbot: gr.update(label="当前模型："+k)}
         md_dropdown.select(on_md_dropdown_changed, [md_dropdown], [chatbot] )
 
+        @agentops.record_function('on_theme_dropdown_changed')
         def on_theme_dropdown_changed(theme, secret_css):
             adjust_theme, css_part1, _, adjust_dynamic_theme = load_dynamic_theme(theme)
             if adjust_dynamic_theme:
@@ -459,6 +480,7 @@ def main():
             """
         )
         # 随变按钮的回调函数注册
+        @agentops.record_function('route')
         def route(request: gr.Request, k, *args, **kwargs):
             if k in [r"打开插件列表", r"请先从插件列表中选择"]: return
             yield from ArgsGeneralWrapper(plugins[k]["Function"])(request, *args, **kwargs)
@@ -469,6 +491,7 @@ def main():
         stopBtn.click(fn=None, inputs=None, outputs=None, cancels=cancel_handles)
         stopBtn2.click(fn=None, inputs=None, outputs=None, cancels=cancel_handles)
         plugins_as_btn = {name:plugin for name, plugin in plugins.items() if plugin.get('Button', None)}
+        @agentops.record_function('on_group_change')
         def on_group_change(group_list):
             btn_list = []
             fns_list = []
@@ -484,10 +507,12 @@ def main():
         if ENABLE_AUDIO: 
             from crazy_functions.live_audio.audio_io import RealtimeAudioDistribution
             rad = RealtimeAudioDistribution()
+            @agentops.record_function('deal_audio')
             def deal_audio(audio, cookies):
                 rad.feed(cookies['uuid'].hex, audio)
             audio_mic.stream(deal_audio, inputs=[audio_mic, cookies])
 
+        @agentops.record_function('init_cookie')
         def init_cookie(cookies, chatbot):
             # 为每一位访问的用户赋予一个独一无二的uuid编码
             cookies.update({'uuid': uuid.uuid4()})
@@ -513,6 +538,7 @@ def main():
         demo.load(None, inputs=[gr.Textbox(LAYOUT, visible=False)], outputs=None, _js='(LAYOUT)=>{GptAcademicJavaScriptInit(LAYOUT);}')
         
     # gradio的inbrowser触发不太稳定，回滚代码到原始的浏览器打开函数
+    @agentops.record_function('run_delayed_tasks')
     def run_delayed_tasks():
         import threading, webbrowser, time
         print("export WEB_PORT=8886")
@@ -520,8 +546,11 @@ def main():
         if DARK_MODE:   print(f"\t「暗色主题已启用（支持动态切换主题）」: http://localhost:{PORT}")
         else:           print(f"\t「亮色主题已启用（支持动态切换主题）」: http://localhost:{PORT}")
 
+        @agentops.record_function('auto_updates')
         def auto_updates(): time.sleep(0); auto_update()
+        @agentops.record_function('open_browser')
         def open_browser(): time.sleep(2); webbrowser.open_new_tab(f"http://localhost:{PORT}")
+        @agentops.record_function('warm_up_mods')
         def warm_up_mods(): time.sleep(4); warm_up_modules()
         
         threading.Thread(target=auto_updates, name="self-upgrade", daemon=True).start() # 查看自动更新
@@ -550,5 +579,10 @@ def main():
     #                 blocked_paths=["config.py","config_private.py","docker-compose.yml","Dockerfile"])
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        agentops.log_error(str(e))
+    finally:
+        agentops.end_session('Success')
     print("export WEB_PORT=8886")
