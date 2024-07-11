@@ -102,7 +102,10 @@ def doc2json(limit, get_token_fn, text, steps=[400, 200, 100]):
     doc_json = {}
     if "# " in doc_list[0]:
         # 这时候，先把标题拿到，规则是带#的那一行就是：
-        title = doc_list[0].strip().split("\n")[0].split('# ')[1]
+        # 先用# 来切分完整的字符串：
+        title = doc_list[0].strip().split("# ")[-1].split("\n")[0]
+        # # 这时候会拿到前后两个信息
+        # title = doc_list[0].strip().split("\n")[0].split('# ')[1]
         print("title:", title)
         doc_json.update({"title": title})
         pre_content = doc_list[0].strip().split("# "+title)[1]
