@@ -43,6 +43,8 @@ AVAIL_LLM_MODELS = ["cohere-command-r-plus",
                     ]
 SILICONFLOW_API_KEY = ''
 SILICONFLOW_API_KEYS = ''
+
+HOME_PAGE = ""
 # --- --- --- ---
 # P.S. 其他可用的模型还包括
 # AVAIL_LLM_MODELS = [
