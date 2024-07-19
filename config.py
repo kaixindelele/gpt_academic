@@ -35,7 +35,7 @@ LLM_MODEL = "siliconflow-01-ai/Yi-1.5-9B-Chat-16K" # 可选 ↓↓↓
 BASE_URL = ''
 
 AVAIL_LLM_MODELS = ["cohere-command-r-plus",
-                    "gpt-3.5-turbo-0125", "gpt-3.5-turbo", 
+                    "gpt-3.5-turbo-0125", "gpt-3.5-turbo", "gpt-4o-mini",
                     "siliconflow-THUDM/glm-4-9b-chat", "siliconflow-01-ai/Yi-1.5-9B-Chat-16K",
                     'siliconflow-Qwen/Qwen1.5-110B-Chat', "siliconflow-Qwen/Qwen2-72B-Instruct",
                     'siliconflow-deepseek-ai/DeepSeek-V2-Chat', "siliconflow-01-ai/Yi-1.5-34B-Chat-16K",
