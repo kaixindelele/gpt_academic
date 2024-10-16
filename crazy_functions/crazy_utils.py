@@ -162,6 +162,7 @@ def can_multi_process(llm) -> bool:
         if llm.startswith('azure-'): return True
         if llm.startswith('spark'): return True
         if llm.startswith('siliconflow-'): return True
+        if llm.startswith('gemini'): return False
         if llm.startswith('zhipuai') or llm.startswith('glm-'): return True
         return False
 
@@ -215,14 +216,14 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     assert len(inputs_array) == len(sys_prompt_array)
     if max_workers == -1: # 读取配置文件
         try: max_workers = get_conf('DEFAULT_WORKER_NUM')
-        except: max_workers = 8
+        except: max_workers = 3
         if max_workers <= 0: max_workers = 3
     # 屏蔽掉 chatglm的多线程，可能会导致严重卡顿
     if not can_multi_process(llm_kwargs['llm_model']):
-        max_workers = 1
+        max_workers = 3
     # 将gpt的并发降低为5
     if llm_kwargs['llm_model'].startswith('gpt-'):
-        max_workers = 5
+        max_workers = 3
 
     executor = ThreadPoolExecutor(max_workers=max_workers)
     n_frag = len(inputs_array)
@@ -259,7 +260,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
                         sys_prompt=sys_prompt, observe_window=mutable[index], console_slience=True
                     )
                 mutable[index][2] = "已成功"
-                return gpt_say
+                return gpt_say.strip()
             except ConnectionAbortedError as token_exceeded_error:
                 # 【第二种情况】：Token溢出
                 if handle_token_exceed:
@@ -279,7 +280,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
                     gpt_say += f"[Local Message] 警告，线程{index}在执行过程中遭遇问题, Traceback：\n\n{tb_str}\n\n"
                     if len(mutable[index][0]) > 0: gpt_say += "此线程失败前收到的回答：\n\n" + mutable[index][0]
                     mutable[index][2] = "输入过长已放弃"
-                    return gpt_say # 放弃
+                    return gpt_say.strip() # 放弃
             except:
                 # 【第三种情况】：其他错误
                 if detect_timeout(): raise RuntimeError("检测到程序终止。")
@@ -306,7 +307,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
                     mutable[index][2] = "已失败"
                     wait = 5
                     time.sleep(5)
-                    return gpt_say # 放弃
+                    return gpt_say.strip() # 放弃
 
     # 异步任务开始
     futures = [executor.submit(_req_gpt, index, inputs, history, sys_prompt) for index, inputs, history, sys_prompt in zip(

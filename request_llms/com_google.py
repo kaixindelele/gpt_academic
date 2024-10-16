@@ -141,8 +141,8 @@ class GoogleChatInit:
             "http":  "http://127.0.0.1:7890",  # 再例如  "http":  "http://127.0.0.1:7890",
             "https": "http://127.0.0.1:7890",  # 再例如  "https": "http://127.0.0.1:7890",
         }
-        print("llm_kwargs", llm_kwargs)
-        print("payload:", payload)
+        print("llm_kwargs", llm_kwargs['api_key'])
+        # print("payload:", payload)
         response = requests.post(
             url=base_url,
             headers=headers,
@@ -218,13 +218,13 @@ class GoogleChatInit:
         messages.append(self.__conversation_user(inputs, llm_kwargs, enable_multimodal_capacity))  # 处理用户对话
         payload = {
             "contents": messages,
-            # "generationConfig": {
-            #     # "maxOutputTokens": llm_kwargs.get("max_token", 1024),
-            #     # "stopSequences": str(llm_kwargs.get("stop", "")).split(" "),
-            #     "temperature": 0.1,
-            #     "topP": 1,
-            #     "topK": 10,
-            # },
+            "generationConfig": {
+                # "maxOutputTokens": llm_kwargs.get("max_token", 1024),
+                # "stopSequences": str(llm_kwargs.get("stop", "")).split(" "),
+                "temperature": 0.1,
+                "topP": 1,
+                "topK": 10,
+            },
         }
 
         return header, payload

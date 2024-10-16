@@ -291,6 +291,7 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
             print("latex gpt_say:", gpt_say.strip())
             gpt_say = gpt_say.strip().replace("```latex", "").replace("```", "")
             pfg.sp_file_result.append(gpt_say)
+            print("extracted latex gpt_say:", gpt_say.strip())
         pfg.merge_result()
 
         # <-------- 临时存储用于调试 ---------->
