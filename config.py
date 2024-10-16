@@ -12,7 +12,7 @@ API_KEY = "此处填API密钥"    # 可同时填写多个API-KEY，用英文逗�
 
 
 # [step 2]>> 改为True应用代理，如果直接在海外服务器部署，此处不修改；如果使用本地或无地域限制的大模型时，此处也不需要修改
-USE_PROXY = False
+USE_PROXY = True
 if USE_PROXY:
     """
     代理网络的地址，打开你的代理软件查看代理协议(socks5h / http)、地址(localhost)和端口(11284)
@@ -24,22 +24,21 @@ if USE_PROXY:
     """
     proxies = {
         #          [协议]://  [地址]  :[端口]
-        "http":  "socks5h://localhost:11284",  # 再例如  "http":  "http://127.0.0.1:7890",
-        "https": "socks5h://localhost:11284",  # 再例如  "https": "http://127.0.0.1:7890",
+        "http":  "http://127.0.0.1:7890",  # 再例如  "http":  "http://127.0.0.1:7890",
+        "https": "http://127.0.0.1:7890",  # 再例如  "https": "http://127.0.0.1:7890",
     }
 else:
     proxies = None
 
 # [step 3]>> 模型选择是 (注意: LLM_MODEL是默认选中的模型, 它*必须*被包含在AVAIL_LLM_MODELS列表中 )
-LLM_MODEL = "siliconflow-01-ai/Yi-1.5-9B-Chat-16K" # 可选 ↓↓↓
+LLM_MODEL = "gemini-1.5-flash-002" # 可选 ↓↓↓
 BASE_URL = ''
 
 AVAIL_LLM_MODELS = ["cohere-command-r-plus",
-                    "gpt-3.5-turbo-0125", "gpt-3.5-turbo", "gpt-4o-mini",
+                    "gpt-4o-mini",
                     "siliconflow-THUDM/glm-4-9b-chat", "siliconflow-01-ai/Yi-1.5-9B-Chat-16K",
-                    'siliconflow-Qwen/Qwen1.5-110B-Chat', "siliconflow-Qwen/Qwen2-72B-Instruct",
-                    'siliconflow-deepseek-ai/DeepSeek-V2-Chat', "siliconflow-01-ai/Yi-1.5-34B-Chat-16K",
-                    'deepseek-coder', "deepseek-chat"
+                    "gemini-1.5-flash-002", "gemini-1.5-pro-002",
+                    "gemini-1.5-pro-001"
                     ]
 SILICONFLOW_API_KEY = ''
 SILICONFLOW_API_KEYS = ''
@@ -260,8 +259,8 @@ CUSTOM_API_KEY_PATTERN = ""
 
 
 # Google Gemini API-Key
-GEMINI_API_KEY = ''
-
+# Gemini API密钥
+GEMINI_API_KEY = ''  # 请替换为您的实际API密钥
 
 # HUGGINGFACE的TOKEN，下载LLAMA时起作用 https://huggingface.co/docs/hub/security-tokens
 HUGGINGFACE_ACCESS_TOKEN = "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"
