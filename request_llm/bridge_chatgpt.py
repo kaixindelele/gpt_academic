@@ -620,7 +620,8 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
                 pass_flag = False
         else:
             pass_flag = True
-
+        # 取消敏感词限制！
+        pass_flag = True
         # 如果是敏感词，直接返回预设的回复
         if pass_flag == False:
             from toolbox import black_list              # reject 并拉黑IP
