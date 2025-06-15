@@ -606,22 +606,23 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
 
     # 根据system_prompt判断，如果是对话形式的，则需要判断
     if "Serve me as a writing and programming assistant." in system_prompt:
-        result, found_keywords = contains_sensitive_words(tokenized_text, sensitive_words)
+        # result, found_keywords = contains_sensitive_words(tokenized_text, sensitive_words)
 
-        if result:
-            print("包含敏感词：", found_keywords)
-            print("奇怪的分词：", tokenized_text)
-            # openai.proxy = proxies['https']
-            check_result = check_sensitive(inputs, zz_sensitive_words, sq_sensitive_words, key=api_key, llm_kwargs=llm_kwargs)['pass']
-            add_black_list(check_result, api_key)
-            if bool(check_result):
-                pass_flag = True
-            else:
-                pass_flag = False
-        else:
-            pass_flag = True
+        # if result:
+        #     print("包含敏感词：", found_keywords)
+        #     print("奇怪的分词：", tokenized_text)
+        #     # openai.proxy = proxies['https']
+        #     check_result = check_sensitive(inputs, zz_sensitive_words, sq_sensitive_words, key=api_key, llm_kwargs=llm_kwargs)['pass']
+        #     add_black_list(check_result, api_key)
+        #     if bool(check_result):
+        #         pass_flag = True
+        #     else:
+        #         pass_flag = False
+        # else:
+        #     pass_flag = True
         # 取消敏感词限制！
         pass_flag = True
+        print("取消敏感词了：", pass_flag)
         # 如果是敏感词，直接返回预设的回复
         if pass_flag == False:
             from toolbox import black_list              # reject 并拉黑IP
