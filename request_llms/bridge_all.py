@@ -206,7 +206,7 @@ model_info = {
         "token_cnt": get_token_num_gpt4,
     },
 
-    "gpt-4o": {
+    "gpt-5.4": {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
@@ -216,7 +216,7 @@ model_info = {
         "token_cnt": get_token_num_gpt4,
     },
 
-    "gpt-4o-mini": {
+    "gpt-5.4-mini": {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "endpoint": openai_endpoint,
@@ -226,7 +226,7 @@ model_info = {
         "token_cnt": get_token_num_gpt4,
     },
 
-    "gpt-4o-2024-05-13": {
+    "gpt-5.4-2024-05-13": {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
         "has_multimodal_capacity": True,
